@@ -15,17 +15,17 @@ const flowSteps = [
   {
     time: '3:07',
     title: 'Baby wakes',
-    copy: 'The room is dark. You need the next step, not a whole app.',
+    copy: 'The room is dim, the baby is crying, and you only need the last feed.',
   },
   {
     time: '3:09',
-    title: 'One tap logs it',
-    copy: 'Feed, sleep, or diaper is captured without menus or bright screens.',
+    title: 'One thumb logs it',
+    copy: 'Breast side, bottle amount, sleep, or wet/dirty diaper is saved without bright menus.',
   },
   {
     time: '3:14',
-    title: 'Back to surviving',
-    copy: 'The log is there for morning, and you can keep the night quiet.',
+    title: 'Back to the room',
+    copy: 'The handoff is ready for morning, and the dim room stays dim.',
   },
 ]
 
@@ -86,21 +86,21 @@ const productMoments = [
     eyebrow: 'Partner sync',
     title: 'The recap is already there',
     copy:
-      'Bottle logged at 4:12 by your partner, plus calm bounded reassurance when a question hits.',
+      'Bottle logged at 4:12 by your partner, plus bounded newborn guidance for common worries and clear red flags.',
     phoneTitle: 'Partner update',
     timer: '4:12',
     status: 'Bottle logged',
     actions: ['Seen', 'Reply', 'Ask'],
-    noteLabel: 'Calm answer',
-    noteValue: 'Likely normal',
+    noteLabel: 'Guidance',
+    noteValue: 'Red flags clear',
     anchors: ['calm-answers', 'partner-sync'],
     details: [
       { label: 'By partner', value: 'Bottle' },
       { label: 'Amount', value: '80 ml' },
     ],
     answer: {
-      question: 'Calm answer',
-      response: 'Likely normal',
+      question: 'Newborn guidance',
+      response: 'When to call is clear',
     },
   },
 ]
@@ -110,22 +110,22 @@ const activeProductMoment = computed(
 )
 
 const notAnother = [
-  'Not milestone spam',
-  'Not endless charts',
-  'Not chaotic AI answers',
-  'Just the night-shift basics',
+  'No milestone spam',
+  'No endless charts',
+  'No open-ended medical advice',
+  'Just feeds, diapers, sleep, and handoff',
 ]
 
 const faqs = [
   {
     question: 'Is this medical advice?',
     answer:
-      'No. Lullaby gives general, bounded reassurance and clear prompts for when to contact your pediatrician. It does not diagnose, treat, or replace professional care.',
+      'No. Lullaby offers bounded newborn guidance for common worries, with clear signs for when to call your pediatrician. It does not diagnose, treat, or replace professional care.',
   },
   {
     question: 'What can I track?',
     answer:
-      'The first version focuses on feeds, sleep, diapers, last events, and daily totals. The goal is the useful night-shift minimum.',
+      'The first version focuses on last feed, breast side, bottle amount, sleep, wet/dirty diapers, recent events, and daily totals.',
   },
   {
     question: 'Can I share with my partner?',
@@ -140,7 +140,7 @@ const faqs = [
   {
     question: 'When is it launching?',
     answer:
-      'The launch date is not public yet. Join the waitlist to get early access when the first beta is ready.',
+      'The launch date is not public yet. Join the waitlist for one email when the first newborn-night beta opens.',
   },
 ]
 
@@ -384,13 +384,15 @@ onBeforeUnmount(() => {
             <div class="hero-inner">
               <div class="hero-copy">
                 <p class="eyebrow">For the newborn night shift</p>
-                <h1 id="hero-heading">The 3AM companion for newborn nights</h1>
+                <h1 id="hero-heading">Feed, diaper, sleep - logged at 3AM</h1>
                 <p class="hero-subcopy">
-                  Track feeds, sleep, and diapers one-handed in the dark - and get calm
-                  answers when "is this normal?" hits.
+                  Track the last feed, breast side, bottle amount, sleep, and wet or
+                  dirty diaper one-handed in a dim room - with bounded guidance for
+                  common newborn worries and clear signs for when to call your
+                  pediatrician.
                 </p>
                 <a class="primary-button" href="#waitlist">Join the waitlist</a>
-                <p class="microcopy">Built for exhausted new parents, not perfect routines.</p>
+                <p class="microcopy">One email when the first newborn-night build opens.</p>
               </div>
 
               <div class="hero-device" aria-label="Lullaby phone preview">
@@ -425,7 +427,7 @@ onBeforeUnmount(() => {
         <div class="container">
           <div class="section-heading narrow">
             <p class="eyebrow">3AM flow</p>
-            <h2>Three small steps when the night feels too big.</h2>
+            <h2>Three taps for the feed you will forget by morning.</h2>
           </div>
 
           <div class="flow-grid">
@@ -490,8 +492,8 @@ onBeforeUnmount(() => {
             <p class="eyebrow">Track</p>
             <h2 id="story-heading">Night shift in one hand.</h2>
             <p>
-              Track feeds, sleep, diapers, calm answers, and partner handoffs as one
-              quiet flow instead of a pile of midnight decisions.
+              Log feeds, sleep, wet/dirty diapers, common newborn worries, and partner
+              handoffs without turning the night into admin.
             </p>
           </div>
 
@@ -535,9 +537,10 @@ onBeforeUnmount(() => {
         <div class="container final-inner reveal-item">
           <div class="section-heading narrow">
             <p class="eyebrow">Early access</p>
-            <h2>Built for the nights no one prepared you for.</h2>
+            <h2>For the private beta, built around real newborn nights.</h2>
             <p>
-              Lullaby is intentionally narrow: the night-shift basics, kept calm.
+              Get early access to the first build for feeds, diapers, sleep, and
+              half-awake partner handoffs.
             </p>
           </div>
 
@@ -555,7 +558,7 @@ onBeforeUnmount(() => {
         <div class="container">
           <div class="section-heading narrow">
             <p class="eyebrow">FAQ</p>
-            <h2>Quiet answers before launch.</h2>
+            <h2>Newborn-night questions before launch.</h2>
           </div>
 
           <div class="faq-list">
@@ -574,7 +577,7 @@ onBeforeUnmount(() => {
     </main>
 
     <footer class="site-footer">
-      <p>Lullaby is not medical advice. Always contact your healthcare provider with medical concerns.</p>
+      <p>Lullaby is not medical diagnosis. Always contact your pediatrician or healthcare provider with medical concerns.</p>
       <span>© 2026 Lullaby</span>
     </footer>
   </div>
