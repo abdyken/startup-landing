@@ -87,59 +87,90 @@ const faqs = [
     </header>
 
     <main id="top">
-      <section class="hero section">
-        <div class="hero-copy">
-          <p class="eyebrow">For the newborn night shift</p>
-          <h1>The 3AM companion for newborn nights</h1>
-          <p class="hero-subcopy">
-            Track feeds, sleep, and diapers one-handed in the dark - and get calm
-            answers when "is this normal?" hits.
-          </p>
-          <a class="primary-button" href="#waitlist">Join the waitlist</a>
-          <p class="microcopy">Built for exhausted new parents, not perfect routines.</p>
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-shrink-stage" aria-hidden="true">
+          <span class="hero-ghost">03:00</span>
         </div>
 
-        <div class="hero-device" aria-label="Lullaby phone preview">
-          <div class="phone phone-hero">
-            <div class="phone-top">
-              <span>3:12</span>
-              <span>Night mode</span>
-            </div>
-            <div class="phone-main">
-              <p class="phone-kicker">Tonight</p>
-              <h2>Feed running</h2>
-              <div class="timer">12:08</div>
-              <div class="quick-actions" aria-label="Quick logging actions">
-                <span>Feed</span>
-                <span>Sleep</span>
-                <span>Diaper</span>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">For the newborn night shift</p>
+            <h1 id="hero-heading">The 3AM companion for newborn nights</h1>
+            <p class="hero-subcopy">
+              Track feeds, sleep, and diapers one-handed in the dark - and get calm
+              answers when "is this normal?" hits.
+            </p>
+            <a class="primary-button" href="#waitlist">Join the waitlist</a>
+            <p class="microcopy">Built for exhausted new parents, not perfect routines.</p>
+          </div>
+
+          <div class="hero-device" aria-label="Lullaby phone preview">
+            <div class="phone phone-hero">
+              <div class="phone-top">
+                <span>3:12</span>
+                <span>Night mode</span>
               </div>
-            </div>
-            <div class="phone-note">
-              <span>Last feed</span>
-              <strong>2h ago</strong>
+              <div class="phone-main">
+                <p class="phone-kicker">Tonight</p>
+                <h2>Feed running</h2>
+                <div class="timer">12:08</div>
+                <div class="quick-actions" aria-label="Quick logging actions">
+                  <span>Feed</span>
+                  <span>Sleep</span>
+                  <span>Diaper</span>
+                </div>
+              </div>
+              <div class="phone-note">
+                <span>Last feed</span>
+                <strong>2h ago</strong>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="flow" class="flow section">
-        <div class="section-heading narrow">
-          <p class="eyebrow">3AM flow</p>
-          <h2>Three small steps when the night feels too big.</h2>
-        </div>
+      <section id="flow" class="flow section motion-ready">
+        <span class="section-word" aria-hidden="true">FLOW</span>
+        <div class="container">
+          <div class="section-heading narrow">
+            <p class="eyebrow">3AM flow</p>
+            <h2>Three small steps when the night feels too big.</h2>
+          </div>
 
-        <div class="flow-grid">
-          <article v-for="step in flowSteps" :key="step.title" class="flow-step">
-            <span class="flow-time">{{ step.time }}</span>
-            <h3>{{ step.title }}</h3>
-            <p>{{ step.copy }}</p>
-          </article>
+          <div class="flow-grid">
+            <article v-for="step in flowSteps" :key="step.title" class="flow-step">
+              <span class="flow-time">{{ step.time }}</span>
+              <h3>{{ step.title }}</h3>
+              <p>{{ step.copy }}</p>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section id="track" class="track section">
-        <div class="split">
+      <section id="track" class="track section motion-ready">
+        <span class="section-word section-word-right" aria-hidden="true">TRACK</span>
+        <div class="container split">
+          <div class="product-stage">
+            <div class="track-card" aria-label="Tracking preview">
+              <div class="track-card-head">
+                <span>3:41 AM</span>
+                <span>Updated just now</span>
+              </div>
+              <div class="tracker-list">
+                <div v-for="item in trackers" :key="item.label" class="tracker-row">
+                  <span>{{ item.label }}</span>
+                  <strong>{{ item.value }}</strong>
+                  <small>{{ item.note }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="mini-handoff" aria-label="Morning handoff preview">
+              <span>Morning handoff</span>
+              <strong>Everything from the night, already there.</strong>
+            </div>
+          </div>
+
           <div class="section-heading">
             <p class="eyebrow">Track</p>
             <h2>The basics, reachable with one thumb.</h2>
@@ -148,45 +179,37 @@ const faqs = [
               sleep, and daily totals. No dashboard clutter when everyone needs quiet.
             </p>
           </div>
-
-          <div class="track-card" aria-label="Tracking preview">
-            <div class="track-card-head">
-              <span>3:41 AM</span>
-              <span>Updated just now</span>
-            </div>
-            <div class="tracker-list">
-              <div v-for="item in trackers" :key="item.label" class="tracker-row">
-                <span>{{ item.label }}</span>
-                <strong>{{ item.value }}</strong>
-                <small>{{ item.note }}</small>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      <section id="calm-answers" class="answers section">
-        <div class="split split-reverse">
+      <section id="calm-answers" class="answers section motion-ready">
+        <span class="section-word" aria-hidden="true">CALM</span>
+        <div class="container split split-reverse">
           <article class="answer-card" aria-label="Calm answer example">
-            <p class="answer-label">Question</p>
-            <h3>Is green poop normal?</h3>
-            <div class="answer-block">
-              <strong>Likely normal</strong>
-              <p>
-                Green poop can happen with normal digestion, feeding changes, or
-                iron in formula. If your baby is otherwise well, it is often not urgent.
-              </p>
+            <div class="answer-question">
+              <p class="answer-label">Question</p>
+              <h3>Is green poop normal?</h3>
             </div>
-            <div class="answer-block">
-              <strong>What to try now</strong>
-              <p>Check feeding, hydration, and whether anything changed today.</p>
-            </div>
-            <div class="answer-block caution">
-              <strong>Call doctor if...</strong>
-              <p>
-                There is blood, fever, repeated vomiting, dehydration, severe
-                fussiness, or your baby seems unlike themselves.
-              </p>
+
+            <div class="answer-stack">
+              <div class="answer-block">
+                <strong>Likely normal</strong>
+                <p>
+                  Green poop can happen with normal digestion, feeding changes, or
+                  iron in formula. If your baby is otherwise well, it is often not urgent.
+                </p>
+              </div>
+              <div class="answer-block">
+                <strong>What to try now</strong>
+                <p>Check feeding, hydration, and whether anything changed today.</p>
+              </div>
+              <div class="answer-block caution">
+                <strong>Call doctor if...</strong>
+                <p>
+                  There is blood, fever, repeated vomiting, dehydration, severe
+                  fussiness, or your baby seems unlike themselves.
+                </p>
+              </div>
             </div>
           </article>
 
@@ -201,8 +224,8 @@ const faqs = [
         </div>
       </section>
 
-      <section id="partner-sync" class="partner section">
-        <div class="partner-panel">
+      <section id="partner-sync" class="partner section motion-ready">
+        <div class="container partner-panel">
           <div class="section-heading narrow">
             <p class="eyebrow">Partner sync</p>
             <h2>Share the night shift without waking each other.</h2>
@@ -218,38 +241,39 @@ const faqs = [
         </div>
       </section>
 
-      <section class="not-another section">
-        <div class="section-heading narrow">
-          <p class="eyebrow">Not another baby app</p>
-          <h2>Built for the nights, not the noise.</h2>
-        </div>
-
-        <ul class="not-list" aria-label="What Lullaby is not">
-          <li v-for="item in notAnother" :key="item">{{ item }}</li>
-        </ul>
-      </section>
-
-      <section id="faq" class="faq section">
-        <div class="section-heading narrow">
-          <p class="eyebrow">FAQ</p>
-          <h2>Quiet answers before launch.</h2>
-        </div>
-
-        <div class="faq-list">
-          <details v-for="faq in faqs" :key="faq.question" class="faq-item">
-            <summary>{{ faq.question }}</summary>
-            <p>{{ faq.answer }}</p>
-          </details>
-        </div>
-      </section>
-
       <section id="waitlist" class="final-cta section">
-        <div class="final-inner">
-          <p class="eyebrow">Early access</p>
-          <h2>Built for the nights no one prepared you for.</h2>
+        <div class="container final-inner">
+          <div class="section-heading narrow">
+            <p class="eyebrow">Early access</p>
+            <h2>Built for the nights no one prepared you for.</h2>
+            <p>
+              Lullaby is intentionally narrow: the night-shift basics, kept calm.
+            </p>
+          </div>
+
+          <ul class="not-list" aria-label="What Lullaby keeps out">
+            <li v-for="item in notAnother" :key="item">{{ item }}</li>
+          </ul>
+
           <a class="primary-button" href="mailto:hello@lullaby.app?subject=Lullaby%20waitlist">
             Join waitlist
           </a>
+        </div>
+      </section>
+
+      <section id="faq" class="faq section">
+        <div class="container">
+          <div class="section-heading narrow">
+            <p class="eyebrow">FAQ</p>
+            <h2>Quiet answers before launch.</h2>
+          </div>
+
+          <div class="faq-list">
+            <details v-for="faq in faqs" :key="faq.question" class="faq-item">
+              <summary>{{ faq.question }}</summary>
+              <p>{{ faq.answer }}</p>
+            </details>
+          </div>
         </div>
       </section>
     </main>
