@@ -75,6 +75,7 @@ const faqs = [
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 const interpolate = (start, end, progress) => start + (end - start) * progress
 let cleanupHeroScroll = () => {}
+let cleanupSectionReveal = () => {}
 
 onMounted(() => {
   const hero = heroRef.value
@@ -172,8 +173,63 @@ onMounted(() => {
   }
 })
 
+onMounted(() => {
+  const root = document.documentElement
+  const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const revealItems = Array.from(document.querySelectorAll('.reveal-item'))
+  let observer = null
+
+  const revealAll = () => {
+    revealItems.forEach((item) => item.classList.add('is-revealed'))
+  }
+
+  root.classList.add('reveal-ready')
+
+  if (!('IntersectionObserver' in window) || reducedMotionQuery.matches) {
+    revealAll()
+  } else {
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return
+          }
+
+          entry.target.classList.add('is-revealed')
+          observer?.unobserve(entry.target)
+        })
+      },
+      {
+        rootMargin: '0px 0px -12% 0px',
+        threshold: 0.14,
+      },
+    )
+
+    revealItems.forEach((item) => observer.observe(item))
+  }
+
+  const syncRevealMotionPreference = () => {
+    if (!reducedMotionQuery.matches) {
+      return
+    }
+
+    observer?.disconnect()
+    observer = null
+    revealAll()
+  }
+
+  reducedMotionQuery.addEventListener('change', syncRevealMotionPreference)
+
+  cleanupSectionReveal = () => {
+    observer?.disconnect()
+    reducedMotionQuery.removeEventListener('change', syncRevealMotionPreference)
+    root.classList.remove('reveal-ready')
+  }
+})
+
 onBeforeUnmount(() => {
   cleanupHeroScroll()
+  cleanupSectionReveal()
 })
 </script>
 
@@ -248,7 +304,12 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="flow-grid">
-            <article v-for="step in flowSteps" :key="step.title" class="flow-step">
+            <article
+              v-for="(step, index) in flowSteps"
+              :key="step.title"
+              class="flow-step reveal-item"
+              :style="{ '--reveal-delay': `${index * 80}ms` }"
+            >
               <span class="flow-time">{{ step.time }}</span>
               <h3>{{ step.title }}</h3>
               <p>{{ step.copy }}</p>
@@ -260,7 +321,7 @@ onBeforeUnmount(() => {
       <section id="track" class="track section motion-ready">
         <span class="section-word section-word-right" aria-hidden="true">TRACK</span>
         <div class="container split">
-          <div class="product-stage">
+          <div class="product-stage reveal-item">
             <div class="track-card" aria-label="Tracking preview">
               <div class="track-card-head">
                 <span>3:41 AM</span>
@@ -281,7 +342,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <div class="section-heading">
+          <div class="section-heading reveal-item" style="--reveal-delay: 90ms">
             <p class="eyebrow">Track</p>
             <h2>The basics, reachable with one thumb.</h2>
             <p>
@@ -295,7 +356,7 @@ onBeforeUnmount(() => {
       <section id="calm-answers" class="answers section motion-ready">
         <span class="section-word" aria-hidden="true">CALM</span>
         <div class="container split split-reverse">
-          <article class="answer-card" aria-label="Calm answer example">
+          <article class="answer-card reveal-item" aria-label="Calm answer example">
             <div class="answer-question">
               <p class="answer-label">Question</p>
               <h3>Is green poop normal?</h3>
@@ -323,7 +384,7 @@ onBeforeUnmount(() => {
             </div>
           </article>
 
-          <div class="section-heading">
+          <div class="section-heading reveal-item" style="--reveal-delay: 90ms">
             <p class="eyebrow">Calm answers</p>
             <h2>Reassurance with edges.</h2>
             <p>
@@ -335,7 +396,7 @@ onBeforeUnmount(() => {
       </section>
 
       <section id="partner-sync" class="partner section motion-ready">
-        <div class="container partner-panel">
+        <div class="container partner-panel reveal-item">
           <div class="section-heading narrow">
             <p class="eyebrow">Partner sync</p>
             <h2>Share the night shift without waking each other.</h2>
@@ -352,7 +413,7 @@ onBeforeUnmount(() => {
       </section>
 
       <section id="waitlist" class="final-cta section">
-        <div class="container final-inner">
+        <div class="container final-inner reveal-item">
           <div class="section-heading narrow">
             <p class="eyebrow">Early access</p>
             <h2>Built for the nights no one prepared you for.</h2>
@@ -379,7 +440,12 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="faq-list">
-            <details v-for="faq in faqs" :key="faq.question" class="faq-item">
+            <details
+              v-for="(faq, index) in faqs"
+              :key="faq.question"
+              class="faq-item reveal-item"
+              :style="{ '--reveal-delay': `${index * 55}ms` }"
+            >
               <summary>{{ faq.question }}</summary>
               <p>{{ faq.answer }}</p>
             </details>

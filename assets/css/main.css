@@ -43,6 +43,7 @@
 
 html {
   color-scheme: light;
+  overflow-x: clip;
   scroll-behavior: smooth;
   background: var(--bg);
 }
@@ -50,6 +51,7 @@ html {
 body {
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: clip;
   background:
     radial-gradient(circle at 50% -16rem, rgba(170, 201, 230, 0.42), transparent 36rem),
     radial-gradient(circle at 8% 18rem, rgba(242, 183, 154, 0.14), transparent 26rem),
@@ -263,19 +265,21 @@ summary:focus-visible {
 .hero-shrink-stage {
   position: relative;
   z-index: 0;
+  isolation: isolate;
   display: grid;
   justify-items: center;
   align-content: center;
   width: 100%;
   min-height: calc(var(--hero-height) + clamp(220px, 24svh, 320px));
   padding: 116px 0 72px;
-  overflow: visible;
+  overflow: hidden;
   border-radius: var(--hero-radius);
   background:
     radial-gradient(circle at 50% 22%, rgba(170, 201, 230, 0.34), transparent 34rem),
     radial-gradient(circle at 50% 58%, rgba(203, 207, 236, 0.22), transparent 32rem),
     radial-gradient(circle at 50% 84%, rgba(242, 183, 154, 0.12), transparent 28rem),
     linear-gradient(180deg, rgba(255, 253, 250, 0.88) 0%, rgba(250, 246, 240, 0.82) 72%, rgba(250, 246, 240, 0) 100%);
+  background-clip: padding-box;
   transform: scale(var(--hero-scale));
   transform-origin: top center;
   will-change: transform, border-radius, min-height;
@@ -483,6 +487,27 @@ summary:focus-visible {
 
 .motion-ready {
   --future-sticky-offset: 96px;
+}
+
+.reveal-item {
+  --reveal-delay: 0ms;
+  --reveal-y: 20px;
+}
+
+.reveal-ready .reveal-item {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y), 0);
+  transition:
+    opacity 620ms ease,
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay);
+  will-change: opacity, transform;
+}
+
+.reveal-ready .reveal-item.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 .section-heading {
@@ -935,6 +960,14 @@ summary:focus-visible {
     min-height: 100svh;
     border-radius: 0;
     transform: scale(1);
+    will-change: auto;
+  }
+
+  .reveal-ready .reveal-item,
+  .reveal-ready .reveal-item.is-revealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
     will-change: auto;
   }
 }
