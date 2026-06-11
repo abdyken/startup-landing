@@ -26,7 +26,6 @@
   --radius-lg: 28px;
   --max: 1180px;
 
-  /* Future scroll-shrink hooks, intentionally static in this pass. */
   --hero-scale: 1;
   --hero-radius: 0px;
   --hero-height: 100svh;
@@ -247,18 +246,25 @@ summary:focus-visible {
 .hero {
   position: relative;
   isolation: isolate;
+  min-height: 160svh;
+  padding-inline: 20px;
+  overflow: clip;
+  text-align: center;
+}
+
+.hero-sticky {
+  position: sticky;
+  top: 0;
   display: grid;
   min-height: 100svh;
-  padding: 116px 20px 72px;
-  overflow: hidden;
-  text-align: center;
+  padding: 116px 0 72px;
 }
 
 .hero-shrink-stage {
   position: absolute;
   z-index: -1;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
   width: 100%;
   height: var(--hero-height);
   overflow: hidden;
@@ -267,8 +273,8 @@ summary:focus-visible {
     radial-gradient(circle at 50% 28%, rgba(170, 201, 230, 0.38), transparent 33rem),
     radial-gradient(circle at 50% 62%, rgba(203, 207, 236, 0.26), transparent 30rem),
     linear-gradient(180deg, #FFFDFA 0%, var(--bg) 68%, rgba(250, 246, 240, 0) 100%);
-  transform: scale(var(--hero-scale));
-  transform-origin: top center;
+  transform: translate(-50%, -50%) scale(var(--hero-scale));
+  transform-origin: center;
   will-change: transform, border-radius, height;
 }
 
@@ -856,7 +862,18 @@ summary:focus-visible {
   }
 
   .hero {
-    padding: 96px 14px 64px;
+    min-height: 128svh;
+    padding-inline: 14px;
+  }
+
+  .hero-sticky {
+    position: relative;
+    min-height: auto;
+    padding: 96px 0 64px;
+  }
+
+  .hero-shrink-stage {
+    transform-origin: center top;
   }
 
   .hero-inner {
@@ -891,5 +908,26 @@ summary:focus-visible {
   .site-footer {
     flex-direction: column;
     width: calc(100% - 28px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero {
+    min-height: 100svh;
+  }
+
+  .hero-sticky {
+    position: relative;
+  }
+
+  .hero-shrink-stage {
+    height: 100svh;
+    border-radius: 0;
+    transform: translate(-50%, -50%) scale(1);
+    will-change: auto;
   }
 }
