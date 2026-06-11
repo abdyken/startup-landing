@@ -197,41 +197,41 @@ onBeforeUnmount(() => {
     <main id="top">
       <section ref="heroRef" class="hero" aria-labelledby="hero-heading">
         <div class="hero-sticky">
-          <div class="hero-shrink-stage" aria-hidden="true">
-            <span class="hero-ghost">03:00</span>
-          </div>
+          <div class="hero-shrink-stage">
+            <span class="hero-ghost" aria-hidden="true">03:00</span>
 
-          <div class="hero-inner">
-            <div class="hero-copy">
-              <p class="eyebrow">For the newborn night shift</p>
-              <h1 id="hero-heading">The 3AM companion for newborn nights</h1>
-              <p class="hero-subcopy">
-                Track feeds, sleep, and diapers one-handed in the dark - and get calm
-                answers when "is this normal?" hits.
-              </p>
-              <a class="primary-button" href="#waitlist">Join the waitlist</a>
-              <p class="microcopy">Built for exhausted new parents, not perfect routines.</p>
-            </div>
+            <div class="hero-inner">
+              <div class="hero-copy">
+                <p class="eyebrow">For the newborn night shift</p>
+                <h1 id="hero-heading">The 3AM companion for newborn nights</h1>
+                <p class="hero-subcopy">
+                  Track feeds, sleep, and diapers one-handed in the dark - and get calm
+                  answers when "is this normal?" hits.
+                </p>
+                <a class="primary-button" href="#waitlist">Join the waitlist</a>
+                <p class="microcopy">Built for exhausted new parents, not perfect routines.</p>
+              </div>
 
-            <div class="hero-device" aria-label="Lullaby phone preview">
-              <div class="phone phone-hero">
-                <div class="phone-top">
-                  <span>3:12</span>
-                  <span>Night mode</span>
-                </div>
-                <div class="phone-main">
-                  <p class="phone-kicker">Tonight</p>
-                  <h2>Feed running</h2>
-                  <div class="timer">12:08</div>
-                  <div class="quick-actions" aria-label="Quick logging actions">
-                    <span>Feed</span>
-                    <span>Sleep</span>
-                    <span>Diaper</span>
+              <div class="hero-device" aria-label="Lullaby phone preview">
+                <div class="phone phone-hero">
+                  <div class="phone-top">
+                    <span>3:12</span>
+                    <span>Night mode</span>
                   </div>
-                </div>
-                <div class="phone-note">
-                  <span>Last feed</span>
-                  <strong>2h ago</strong>
+                  <div class="phone-main">
+                    <p class="phone-kicker">Tonight</p>
+                    <h2>Feed running</h2>
+                    <div class="timer">12:08</div>
+                    <div class="quick-actions" aria-label="Quick logging actions">
+                      <span>Feed</span>
+                      <span>Sleep</span>
+                      <span>Diaper</span>
+                    </div>
+                  </div>
+                  <div class="phone-note">
+                    <span>Last feed</span>
+                    <strong>2h ago</strong>
+                  </div>
                 </div>
               </div>
             </div>
