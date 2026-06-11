@@ -7,7 +7,6 @@ const activeProductMomentIndex = ref(0)
 const navLinks = [
   { href: '#flow', label: '3AM flow' },
   { href: '#night-log', label: 'Night log' },
-  { href: '#calm-answers', label: 'Calm answers' },
   { href: '#partner-sync', label: 'Partner sync' },
   { href: '#faq', label: 'FAQ' },
 ]
