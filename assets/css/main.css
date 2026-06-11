@@ -791,11 +791,15 @@ summary:focus-visible {
 
 .story-phone {
   width: min(330px, 78vw);
-  min-height: 660px;
+  height: 660px;
+  min-height: 0;
 }
 
 .story-phone-content {
   display: grid;
+  grid-template-rows: auto auto auto 1fr;
+  height: calc(100% - 81px);
+  overflow: hidden;
 }
 
 .story-phone-main {
@@ -862,6 +866,47 @@ summary:focus-visible {
   line-height: 1.45;
 }
 
+.story-phone-sync .story-phone-main {
+  gap: 11px;
+  padding-top: 42px;
+}
+
+.story-phone-sync .story-phone-main h2 {
+  font-size: 2.04rem;
+}
+
+.story-phone-sync .timer {
+  font-size: 3.34rem;
+}
+
+.story-phone-sync .quick-actions span {
+  min-height: 48px;
+}
+
+.story-phone-sync .phone-note {
+  margin-bottom: 18px;
+  padding-block: 16px;
+}
+
+.story-phone-sync .story-phone-details {
+  margin-bottom: 18px;
+}
+
+.story-phone-sync .story-phone-details div {
+  padding: 11px 12px;
+}
+
+.story-phone-sync .story-phone-answer {
+  margin-top: -4px;
+  margin-bottom: 22px;
+  padding: 13px 14px;
+}
+
+.story-phone-sync .story-phone-answer p {
+  font-size: 0.76rem;
+  line-height: 1.36;
+}
+
 .phone-state-enter-active,
 .phone-state-leave-active {
   transition:
@@ -885,6 +930,7 @@ summary:focus-visible {
   display: grid;
   gap: 18px;
   margin-top: 24px;
+  padding-bottom: 34svh;
 }
 
 .story-moment {
@@ -1166,7 +1212,7 @@ summary:focus-visible {
 
   .story-phone {
     width: min(318px, 82vw);
-    min-height: 610px;
+    height: 610px;
   }
 
   .story-phone-main h2 {
