@@ -384,15 +384,15 @@ onBeforeUnmount(() => {
             <div class="hero-inner">
               <div class="hero-copy">
                 <p class="eyebrow">For the newborn night shift</p>
-                <h1 id="hero-heading">Feed, diaper, sleep - logged at 3AM</h1>
+                <h1 id="hero-heading">One-handed logs for 3AM feeds, diapers, and sleep</h1>
                 <p class="hero-subcopy">
-                  Track the last feed, breast side, bottle amount, sleep, and wet or
-                  dirty diaper one-handed in a dim room - with bounded guidance for
-                  common newborn worries and clear signs for when to call your
-                  pediatrician.
+                  In the dim room, save breast side, bottle amount, wet or dirty
+                  diaper, and sleep without waking yourself up. For common newborn
+                  worries, Lullaby shows bounded guidance, clear red flags, and when
+                  to call your pediatrician - not a diagnosis.
                 </p>
                 <a class="primary-button" href="#waitlist">Join the waitlist</a>
-                <p class="microcopy">One email when the first newborn-night build opens.</p>
+                <p class="microcopy">Private beta. One email when the newborn-night build opens.</p>
               </div>
 
               <div class="hero-device" aria-label="Lullaby phone preview">
