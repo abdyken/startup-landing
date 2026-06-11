@@ -272,7 +272,7 @@ summary:focus-visible {
   align-content: center;
   width: 100%;
   min-height: calc(var(--hero-height) + clamp(220px, 24svh, 320px));
-  padding: 116px 0 72px;
+  padding: 108px 0 64px;
   overflow: hidden;
   border-radius: var(--hero-radius);
   background: var(--bg);
@@ -319,7 +319,7 @@ summary:focus-visible {
   z-index: 1;
   display: grid;
   justify-items: center;
-  gap: clamp(36px, 6vw, 74px);
+  gap: clamp(30px, 4vw, 46px);
   width: min(var(--max), 100%);
   margin: auto;
 }
@@ -327,7 +327,13 @@ summary:focus-visible {
 .hero-copy {
   display: grid;
   justify-items: center;
-  gap: 22px;
+  gap: 18px;
+}
+
+.hero-copy h1 {
+  max-width: 13.2ch;
+  font-size: clamp(3.2rem, 6.65vw, 6.35rem);
+  line-height: 0.99;
 }
 
 .eyebrow {
@@ -1218,7 +1224,13 @@ summary:focus-visible {
   }
 
   .hero-inner {
-    gap: 36px;
+    gap: 30px;
+  }
+
+  .hero-copy h1 {
+    max-width: 10.8ch;
+    font-size: clamp(2.85rem, 12vw, 4.1rem);
+    line-height: 1.02;
   }
 
   .phone {
