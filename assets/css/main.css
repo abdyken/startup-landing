@@ -251,6 +251,7 @@ summary:focus-visible {
   min-height: 160svh;
   padding-inline: 20px;
   overflow: clip;
+  background: var(--bg);
   text-align: center;
 }
 
@@ -274,8 +275,7 @@ summary:focus-visible {
   padding: 116px 0 72px;
   overflow: hidden;
   border-radius: var(--hero-radius);
-  background:
-    linear-gradient(180deg, rgba(255, 253, 250, 0.92) 0%, rgba(250, 246, 240, 0.96) 68%, rgba(250, 246, 240, 0.9) 100%);
+  background: var(--bg);
   background-clip: padding-box;
   backface-visibility: hidden;
   transform: translateZ(0) scale(var(--hero-scale));
