@@ -766,6 +766,8 @@ summary:focus-visible {
 .story-visual {
   position: sticky;
   top: 112px;
+  grid-column: 1;
+  grid-row: 1 / span 2;
   display: grid;
   min-height: calc(100svh - 150px);
   place-items: center;
@@ -803,8 +805,8 @@ summary:focus-visible {
 }
 
 .story-phone-main {
-  gap: 14px;
-  padding-top: 54px;
+  gap: 12px;
+  padding-top: 48px;
 }
 
 .story-phone-main h2 {
@@ -822,7 +824,11 @@ summary:focus-visible {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  margin: 0 30px 30px;
+  margin: 0 30px 24px;
+}
+
+.story-phone .phone-note {
+  margin-bottom: 22px;
 }
 
 .story-phone-details div,
@@ -897,14 +903,21 @@ summary:focus-visible {
 }
 
 .story-phone-sync .story-phone-answer {
-  margin-top: -4px;
-  margin-bottom: 22px;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin: -4px 30px 0;
   padding: 13px 14px;
+  border-color: rgba(170, 201, 230, 0.3);
+  background: rgba(170, 201, 230, 0.12);
 }
 
 .story-phone-sync .story-phone-answer p {
-  font-size: 0.76rem;
-  line-height: 1.36;
+  color: var(--blue-soft);
+  font-size: 0.8rem;
+  font-weight: 850;
+  line-height: 1.1;
+  text-align: right;
 }
 
 .phone-state-enter-active,
@@ -921,16 +934,20 @@ summary:focus-visible {
 }
 
 .story-copy {
+  grid-column: 2;
+  grid-row: 1;
   display: grid;
   gap: 22px;
   padding-top: 14px;
 }
 
 .story-moments {
+  grid-column: 2;
+  grid-row: 2;
   display: grid;
   gap: 18px;
   margin-top: 24px;
-  padding-bottom: 34svh;
+  padding-bottom: 22svh;
 }
 
 .story-moment {
@@ -938,7 +955,7 @@ summary:focus-visible {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 20px;
-  min-height: 52svh;
+  min-height: 50svh;
   align-content: center;
   padding: clamp(24px, 4vw, 38px);
   border: 1px solid rgba(62, 92, 118, 0.18);
@@ -996,13 +1013,14 @@ summary:focus-visible {
   gap: 34px;
   max-width: 980px;
   padding: clamp(40px, 7vw, 78px);
-  border: 1px solid rgba(62, 92, 118, 0.22);
+  border: 1px solid rgba(62, 92, 118, 0.3);
   border-radius: var(--radius-lg);
   background:
-    radial-gradient(circle at 50% 0%, rgba(242, 183, 154, 0.22), transparent 42%),
-    radial-gradient(circle at 80% 20%, rgba(203, 207, 236, 0.2), transparent 34%),
+    radial-gradient(circle at 50% 0%, rgba(242, 183, 154, 0.28), transparent 42%),
+    radial-gradient(circle at 80% 20%, rgba(203, 207, 236, 0.26), transparent 34%),
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(230, 241, 248, 0.34)),
     var(--surface);
-  box-shadow: var(--shadow);
+  box-shadow: 0 28px 76px rgba(62, 92, 118, 0.2);
   text-align: center;
 }
 
@@ -1041,9 +1059,12 @@ summary:focus-visible {
 }
 
 .faq-item {
-  border: 1px solid var(--line-strong);
+  border: 1px solid rgba(62, 92, 118, 0.28);
   border-radius: var(--radius);
-  background: rgba(255, 253, 248, 0.92);
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(230, 241, 248, 0.28)),
+    var(--surface);
+  box-shadow: 0 12px 34px rgba(62, 92, 118, 0.08);
 }
 
 .faq-item[open] {
@@ -1118,11 +1139,22 @@ summary:focus-visible {
   .story-visual {
     position: relative;
     top: auto;
+    grid-column: 1;
+    grid-row: 2;
     min-height: auto;
   }
 
   .story-copy {
+    grid-column: 1;
+    grid-row: 1;
     padding-top: 0;
+  }
+
+  .story-moments {
+    grid-column: 1;
+    grid-row: 3;
+    margin-top: 0;
+    padding-bottom: 0;
   }
 
   .story-moment {
@@ -1210,6 +1242,16 @@ summary:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .story-phone .quick-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .story-phone .quick-actions span {
+    min-height: 48px;
+    border-radius: 14px;
+    font-size: 0.78rem;
+  }
+
   .story-phone {
     width: min(318px, 82vw);
     height: 610px;
@@ -1225,6 +1267,32 @@ summary:focus-visible {
 
   .story-phone-answer {
     margin-inline: 24px;
+  }
+
+  .story-phone-sync .quick-actions,
+  .story-phone-sync .phone-note,
+  .story-phone-sync .story-phone-answer {
+    display: none;
+  }
+
+  .story-phone-sync .story-phone-main {
+    padding-top: 46px;
+  }
+
+  .story-phone-sync .story-phone-details {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  .story-phone-sync .story-phone-details div {
+    min-height: 58px;
+    place-items: center;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .story-phone-sync .story-phone-details span {
+    display: none;
   }
 
   .story-moment {

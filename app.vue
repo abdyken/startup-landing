@@ -100,8 +100,8 @@ const productMoments = [
       { label: 'Amount', value: '80 ml' },
     ],
     answer: {
-      question: 'Is green poop normal?',
-      response: 'Likely normal. Check feeding and call your doctor if fever, blood, or dehydration appears.',
+      question: 'Calm answer',
+      response: 'Likely normal',
     },
   },
 ]
@@ -373,7 +373,7 @@ onBeforeUnmount(() => {
         </a>
       </nav>
 
-      <a class="nav-cta" href="#waitlist">Join waitlist</a>
+      <a class="nav-cta" href="#waitlist">Join the waitlist</a>
     </header>
 
     <main id="top">
@@ -487,49 +487,47 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <div class="story-copy">
-            <div class="section-heading reveal-item">
-              <p class="eyebrow">Track</p>
-              <h2 id="story-heading">Night shift in one hand.</h2>
-              <p>
-                Track feeds, sleep, diapers, calm answers, and partner handoffs as one
-                quiet flow instead of a pile of midnight decisions.
-              </p>
-            </div>
+          <div class="story-copy section-heading reveal-item">
+            <p class="eyebrow">Track</p>
+            <h2 id="story-heading">Night shift in one hand.</h2>
+            <p>
+              Track feeds, sleep, diapers, calm answers, and partner handoffs as one
+              quiet flow instead of a pile of midnight decisions.
+            </p>
+          </div>
 
-            <div class="story-moments">
-              <article
-                v-for="(moment, index) in productMoments"
-                :key="moment.key"
-                class="story-moment reveal-item"
-                :class="{ 'is-active': activeProductMomentIndex === index }"
-                :data-moment-index="index"
-                :style="{ '--reveal-delay': `${index * 70}ms` }"
-                :aria-current="activeProductMomentIndex === index ? 'step' : undefined"
-              >
-                <span
-                  v-for="anchor in moment.anchors"
-                  :id="anchor"
-                  :key="anchor"
-                  class="section-anchor"
-                  aria-hidden="true"
-                ></span>
-                <span class="story-count">0{{ index + 1 }}</span>
+          <div class="story-moments">
+            <article
+              v-for="(moment, index) in productMoments"
+              :key="moment.key"
+              class="story-moment reveal-item"
+              :class="{ 'is-active': activeProductMomentIndex === index }"
+              :data-moment-index="index"
+              :style="{ '--reveal-delay': `${index * 70}ms` }"
+              :aria-current="activeProductMomentIndex === index ? 'step' : undefined"
+            >
+              <span
+                v-for="anchor in moment.anchors"
+                :id="anchor"
+                :key="anchor"
+                class="section-anchor"
+                aria-hidden="true"
+              ></span>
+              <span class="story-count">0{{ index + 1 }}</span>
+              <div>
+                <p class="eyebrow">{{ moment.eyebrow }}</p>
+                <h3>{{ moment.title }}</h3>
+                <p>{{ moment.copy }}</p>
+              </div>
+
+              <div v-if="moment.key === 'sync'" class="sync-moment story-sync">
+                <span class="sync-dot" aria-hidden="true"></span>
                 <div>
-                  <p class="eyebrow">{{ moment.eyebrow }}</p>
-                  <h3>{{ moment.title }}</h3>
-                  <p>{{ moment.copy }}</p>
+                  <p>Bottle logged at 4:12 by your partner.</p>
+                  <small>You can sleep through the recap.</small>
                 </div>
-
-                <div v-if="moment.key === 'sync'" class="sync-moment story-sync">
-                  <span class="sync-dot" aria-hidden="true"></span>
-                  <div>
-                    <p>Bottle logged at 4:12 by your partner.</p>
-                    <small>You can sleep through the recap.</small>
-                  </div>
-                </div>
-              </article>
-            </div>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -549,7 +547,7 @@ onBeforeUnmount(() => {
           </ul>
 
           <a class="primary-button" href="mailto:hello@lullaby.app?subject=Lullaby%20waitlist">
-            Join waitlist
+            Join the waitlist
           </a>
         </div>
       </section>
