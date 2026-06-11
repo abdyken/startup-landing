@@ -1,7 +1,8 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const heroRef = ref(null)
+const activeProductMomentIndex = ref(0)
 
 const navLinks = [
   { href: '#flow', label: '3AM flow' },
@@ -29,13 +30,85 @@ const flowSteps = [
   },
 ]
 
-const trackers = [
-  { label: 'Feed timer', value: '12 min', note: 'Left side running' },
-  { label: 'Last feed', value: '2h 05m', note: 'Bottle, 70 ml' },
-  { label: 'Diaper', value: 'Wet', note: 'Logged 4:03' },
-  { label: 'Sleep', value: '38 min', note: 'Started 3:31' },
-  { label: 'Daily totals', value: '6 feeds', note: '3 diapers, 4 naps' },
+const productMoments = [
+  {
+    key: 'feed',
+    eyebrow: 'Feed',
+    title: 'Feed started',
+    copy:
+      'Lullaby keeps the night log compact: feed timer, left or right side, bottle amount, and last feed context.',
+    phoneTitle: 'Feed started',
+    timer: '12:08',
+    status: 'Left side running',
+    actions: ['Left', 'Right', 'Bottle'],
+    noteLabel: 'Last feed',
+    noteValue: '2h ago',
+    details: [
+      { label: 'Bottle', value: '70 ml' },
+      { label: 'Daily feeds', value: '6' },
+    ],
+  },
+  {
+    key: 'sleep',
+    eyebrow: 'Sleep',
+    title: 'Sleep started',
+    copy:
+      'A simple timer holds the moment without asking you to build a perfect routine at 3AM.',
+    phoneTitle: 'Sleep started',
+    timer: '38:14',
+    status: 'Nap in progress',
+    actions: ['Asleep', 'Wake', 'Note'],
+    noteLabel: 'Last nap',
+    noteValue: '1h 20m',
+    details: [
+      { label: 'Today', value: '4 naps' },
+      { label: 'Longest', value: '52 min' },
+    ],
+  },
+  {
+    key: 'diaper',
+    eyebrow: 'Diaper',
+    title: 'Diaper logged',
+    copy:
+      'Wet, dirty, or both gets captured in one pass, with daily counts ready for the morning handoff.',
+    phoneTitle: 'Diaper logged',
+    timer: '4:03',
+    status: 'Wet diaper saved',
+    actions: ['Wet', 'Dirty', 'Both'],
+    noteLabel: 'Today',
+    noteValue: '3 diapers',
+    details: [
+      { label: 'Wet', value: '2' },
+      { label: 'Dirty', value: '1' },
+    ],
+  },
+  {
+    key: 'sync',
+    eyebrow: 'Partner sync',
+    title: 'The recap is already there',
+    copy:
+      'Bottle logged at 4:12 by your partner, plus calm bounded reassurance when a question hits.',
+    phoneTitle: 'Partner update',
+    timer: '4:12',
+    status: 'Bottle logged',
+    actions: ['Seen', 'Reply', 'Ask'],
+    noteLabel: 'Calm answer',
+    noteValue: 'Likely normal',
+    anchors: ['calm-answers', 'partner-sync'],
+    details: [
+      { label: 'By partner', value: 'Bottle' },
+      { label: 'Amount', value: '80 ml' },
+    ],
+    answer: {
+      question: 'Is green poop normal?',
+      response: 'Likely normal. Check feeding and call your doctor if fever, blood, or dehydration appears.',
+    },
+  },
 ]
+
+const activeProductMoment = computed(
+  () => productMoments[activeProductMomentIndex.value] ?? productMoments[0],
+)
 
 const notAnother = [
   'Not milestone spam',
@@ -76,6 +149,7 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 const interpolate = (start, end, progress) => start + (end - start) * progress
 let cleanupHeroScroll = () => {}
 let cleanupSectionReveal = () => {}
+let cleanupProductStory = () => {}
 
 onMounted(() => {
   const hero = heroRef.value
@@ -227,9 +301,61 @@ onMounted(() => {
   }
 })
 
+onMounted(() => {
+  const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const momentItems = Array.from(document.querySelectorAll('.story-moment'))
+  let observer = null
+
+  if (!('IntersectionObserver' in window) || reducedMotionQuery.matches) {
+    activeProductMomentIndex.value = 0
+  } else {
+    observer = new IntersectionObserver(
+      (entries) => {
+        const activeEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+
+        if (!activeEntry) {
+          return
+        }
+
+        const nextIndex = Number(activeEntry.target.dataset.momentIndex)
+
+        if (Number.isFinite(nextIndex)) {
+          activeProductMomentIndex.value = nextIndex
+        }
+      },
+      {
+        rootMargin: '-38% 0px -42% 0px',
+        threshold: [0, 0.2, 0.45, 0.7],
+      },
+    )
+
+    momentItems.forEach((item) => observer.observe(item))
+  }
+
+  const syncProductMotionPreference = () => {
+    if (!reducedMotionQuery.matches) {
+      return
+    }
+
+    observer?.disconnect()
+    observer = null
+    activeProductMomentIndex.value = 0
+  }
+
+  reducedMotionQuery.addEventListener('change', syncProductMotionPreference)
+
+  cleanupProductStory = () => {
+    observer?.disconnect()
+    reducedMotionQuery.removeEventListener('change', syncProductMotionPreference)
+  }
+})
+
 onBeforeUnmount(() => {
   cleanupHeroScroll()
   cleanupSectionReveal()
+  cleanupProductStory()
 })
 </script>
 
@@ -318,95 +444,91 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section id="track" class="track section motion-ready">
-        <span class="section-word section-word-right" aria-hidden="true">TRACK</span>
-        <div class="container split">
-          <div class="product-stage reveal-item">
-            <div class="track-card" aria-label="Tracking preview">
-              <div class="track-card-head">
-                <span>3:41 AM</span>
-                <span>Updated just now</span>
-              </div>
-              <div class="tracker-list">
-                <div v-for="item in trackers" :key="item.label" class="tracker-row">
-                  <span>{{ item.label }}</span>
-                  <strong>{{ item.value }}</strong>
-                  <small>{{ item.note }}</small>
+      <section id="track" class="product-story section motion-ready" aria-labelledby="story-heading">
+        <span class="section-word section-word-right" aria-hidden="true">NIGHT</span>
+        <div class="container product-story-grid">
+          <div class="story-visual reveal-item">
+            <div class="story-phone-stage" aria-label="Lullaby product preview">
+              <div class="phone story-phone" :class="`story-phone-${activeProductMoment.key}`">
+                <div class="phone-top">
+                  <span>3:12</span>
+                  <span>Night mode</span>
                 </div>
+                <Transition name="phone-state" mode="out-in">
+                  <div :key="activeProductMoment.key" class="story-phone-content">
+                    <div class="phone-main story-phone-main">
+                      <p class="phone-kicker">{{ activeProductMoment.eyebrow }}</p>
+                      <h2>{{ activeProductMoment.phoneTitle }}</h2>
+                      <div class="timer">{{ activeProductMoment.timer }}</div>
+                      <p class="story-phone-status">{{ activeProductMoment.status }}</p>
+                      <div class="quick-actions" aria-label="Quick logging actions">
+                        <span v-for="action in activeProductMoment.actions" :key="action">
+                          {{ action }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="phone-note">
+                      <span>{{ activeProductMoment.noteLabel }}</span>
+                      <strong>{{ activeProductMoment.noteValue }}</strong>
+                    </div>
+                    <div class="story-phone-details">
+                      <div v-for="detail in activeProductMoment.details" :key="detail.label">
+                        <span>{{ detail.label }}</span>
+                        <strong>{{ detail.value }}</strong>
+                      </div>
+                    </div>
+                    <div v-if="activeProductMoment.answer" class="story-phone-answer">
+                      <span>{{ activeProductMoment.answer.question }}</span>
+                      <p>{{ activeProductMoment.answer.response }}</p>
+                    </div>
+                  </div>
+                </Transition>
               </div>
-            </div>
-
-            <div class="mini-handoff" aria-label="Morning handoff preview">
-              <span>Morning handoff</span>
-              <strong>Everything from the night, already there.</strong>
             </div>
           </div>
 
-          <div class="section-heading reveal-item" style="--reveal-delay: 90ms">
-            <p class="eyebrow">Track</p>
-            <h2>The basics, reachable with one thumb.</h2>
-            <p>
-              Lullaby keeps the night log compact: feed timer, last feed, diaper,
-              sleep, and daily totals. No dashboard clutter when everyone needs quiet.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id="calm-answers" class="answers section motion-ready">
-        <span class="section-word" aria-hidden="true">CALM</span>
-        <div class="container split split-reverse">
-          <article class="answer-card reveal-item" aria-label="Calm answer example">
-            <div class="answer-question">
-              <p class="answer-label">Question</p>
-              <h3>Is green poop normal?</h3>
+          <div class="story-copy">
+            <div class="section-heading reveal-item">
+              <p class="eyebrow">Track</p>
+              <h2 id="story-heading">Night shift in one hand.</h2>
+              <p>
+                Track feeds, sleep, diapers, calm answers, and partner handoffs as one
+                quiet flow instead of a pile of midnight decisions.
+              </p>
             </div>
 
-            <div class="answer-stack">
-              <div class="answer-block">
-                <strong>Likely normal</strong>
-                <p>
-                  Green poop can happen with normal digestion, feeding changes, or
-                  iron in formula. If your baby is otherwise well, it is often not urgent.
-                </p>
-              </div>
-              <div class="answer-block">
-                <strong>What to try now</strong>
-                <p>Check feeding, hydration, and whether anything changed today.</p>
-              </div>
-              <div class="answer-block caution">
-                <strong>Call doctor if...</strong>
-                <p>
-                  There is blood, fever, repeated vomiting, dehydration, severe
-                  fussiness, or your baby seems unlike themselves.
-                </p>
-              </div>
-            </div>
-          </article>
+            <div class="story-moments">
+              <article
+                v-for="(moment, index) in productMoments"
+                :key="moment.key"
+                class="story-moment reveal-item"
+                :class="{ 'is-active': activeProductMomentIndex === index }"
+                :data-moment-index="index"
+                :style="{ '--reveal-delay': `${index * 70}ms` }"
+                :aria-current="activeProductMomentIndex === index ? 'step' : undefined"
+              >
+                <span
+                  v-for="anchor in moment.anchors"
+                  :id="anchor"
+                  :key="anchor"
+                  class="section-anchor"
+                  aria-hidden="true"
+                ></span>
+                <span class="story-count">0{{ index + 1 }}</span>
+                <div>
+                  <p class="eyebrow">{{ moment.eyebrow }}</p>
+                  <h3>{{ moment.title }}</h3>
+                  <p>{{ moment.copy }}</p>
+                </div>
 
-          <div class="section-heading reveal-item" style="--reveal-delay: 90ms">
-            <p class="eyebrow">Calm answers</p>
-            <h2>Reassurance with edges.</h2>
-            <p>
-              Not an open-ended chatbot spiral. Lullaby gives a grounded explanation,
-              one next thing to check, and a clear line for when to call your doctor.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id="partner-sync" class="partner section motion-ready">
-        <div class="container partner-panel reveal-item">
-          <div class="section-heading narrow">
-            <p class="eyebrow">Partner sync</p>
-            <h2>Share the night shift without waking each other.</h2>
-          </div>
-
-          <div class="sync-moment" aria-label="Partner sync notification example">
-            <span class="sync-dot" aria-hidden="true"></span>
-            <div>
-              <p>Bottle logged at 4:12 by your partner.</p>
-              <small>You can sleep through the recap.</small>
+                <div v-if="moment.key === 'sync'" class="sync-moment story-sync">
+                  <span class="sync-dot" aria-hidden="true"></span>
+                  <div>
+                    <p>Bottle logged at 4:12 by your partner.</p>
+                    <small>You can sleep through the recap.</small>
+                  </div>
+                </div>
+              </article>
             </div>
           </div>
         </div>
