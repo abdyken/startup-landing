@@ -6,7 +6,7 @@ const activeProductMomentIndex = ref(0)
 
 const navLinks = [
   { href: '#flow', label: '3AM flow' },
-  { href: '#track', label: 'Track' },
+  { href: '#night-log', label: 'Night log' },
   { href: '#calm-answers', label: 'Calm answers' },
   { href: '#partner-sync', label: 'Partner sync' },
   { href: '#faq', label: 'FAQ' },
@@ -444,7 +444,7 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section id="track" class="product-story section motion-ready" aria-labelledby="story-heading">
+      <section id="night-log" class="product-story section motion-ready" aria-labelledby="story-heading">
         <span class="section-word section-word-right" aria-hidden="true">NIGHT</span>
         <div class="container product-story-grid">
           <div class="story-visual reveal-item">

@@ -1188,6 +1188,10 @@ summary:focus-visible {
     scroll-margin-top: 88px;
   }
 
+  .section-anchor {
+    top: -88px;
+  }
+
   .site-nav {
     top: 10px;
     width: calc(100% - 20px);
