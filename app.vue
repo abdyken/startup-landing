@@ -113,10 +113,10 @@ const activeProductMoment = computed(
 )
 
 const notAnother = [
-  'No milestone spam',
-  'No endless charts',
-  'No open-ended medical advice',
-  'Just feeds, diapers, sleep, and handoff',
+  'Last feed saved',
+  'Partner handoff ready',
+  'No diagnosis',
+  'One email only',
 ]
 
 const faqs = [
@@ -549,10 +549,10 @@ onBeforeUnmount(() => {
         <div class="container final-inner reveal-item">
           <div class="section-heading narrow">
             <p class="eyebrow">Early access</p>
-            <h2>For the private beta, built around real newborn nights.</h2>
+            <h2>Get the first newborn-night build.</h2>
             <p>
-              Get early access to the first build for feeds, diapers, sleep, and
-              half-awake partner handoffs.
+              For parents logging feeds, diapers, sleep, and partner handoffs at
+              3AM. One email when the private beta opens.
             </p>
           </div>
 
@@ -560,9 +560,24 @@ onBeforeUnmount(() => {
             <li v-for="item in notAnother" :key="item">{{ item }}</li>
           </ul>
 
-          <a class="primary-button" href="#waitlist">
-            Join the waitlist
-          </a>
+          <form class="waitlist-form" @submit.prevent aria-label="Join the Lullaby waitlist">
+            <label class="sr-only" for="waitlist-email">Email address</label>
+            <input
+              id="waitlist-email"
+              class="waitlist-input"
+              type="email"
+              name="email"
+              placeholder="your@email.com"
+              autocomplete="email"
+              inputmode="email"
+              required
+            />
+            <button class="primary-button waitlist-submit" type="submit">
+              Join the waitlist
+            </button>
+          </form>
+          <p class="cta-note">Bounded newborn guidance. Not medical diagnosis.</p>
+          <p class="cta-helper">One email when the private beta opens. No spam.</p>
         </div>
       </section>
 
