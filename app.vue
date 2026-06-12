@@ -15,17 +15,20 @@ const flowSteps = [
   {
     time: '3:07',
     title: 'Baby wakes',
-    copy: 'The room is dim, the baby is crying, and you only need the last feed.',
+    copy: 'Dim room. One hand free. No bright dashboard, just the last thing that happened.',
+    fragments: ['Last feed 2h ago', 'Night mode', 'One hand free'],
   },
   {
     time: '3:09',
-    title: 'One thumb logs it',
-    copy: 'Breast side, bottle amount, sleep, or wet/dirty diaper is saved without bright menus.',
+    title: 'Log the basics',
+    copy: 'Start the feed, choose a side, add bottle amount, and tap wet or dirty before you forget.',
+    fragments: ['Left side', '70 ml', 'Wet'],
   },
   {
     time: '3:14',
-    title: 'Back to the room',
-    copy: 'The handoff is ready for morning, and the dim room stays dim.',
+    title: 'Handoff is ready',
+    copy: 'Last feed, diaper, and sleep are already there for your partner when morning starts.',
+    fragments: ['Partner will see this', 'Last feed saved', 'Sleep ready'],
   },
 ]
 
@@ -427,7 +430,7 @@ onBeforeUnmount(() => {
         <div class="container">
           <div class="section-heading narrow">
             <p class="eyebrow">3AM flow</p>
-            <h2>Three taps for the feed you will forget by morning.</h2>
+            <h2>A small night record for the wake-ups you barely remember.</h2>
           </div>
 
           <div class="flow-grid">
@@ -437,9 +440,18 @@ onBeforeUnmount(() => {
               class="flow-step reveal-item"
               :style="{ '--reveal-delay': `${index * 80}ms` }"
             >
-              <span class="flow-time">{{ step.time }}</span>
-              <h3>{{ step.title }}</h3>
-              <p>{{ step.copy }}</p>
+              <span class="flow-marker" aria-hidden="true"></span>
+              <div class="flow-step-head">
+                <span class="flow-time">{{ step.time }}</span>
+                <span class="flow-index">0{{ index + 1 }}</span>
+              </div>
+              <div class="flow-step-body">
+                <h3>{{ step.title }}</h3>
+                <p>{{ step.copy }}</p>
+              </div>
+              <ul class="flow-fragments" aria-label="Night log fragments">
+                <li v-for="fragment in step.fragments" :key="fragment">{{ fragment }}</li>
+              </ul>
             </article>
           </div>
         </div>
