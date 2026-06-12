@@ -38,16 +38,16 @@ const productMoments = [
     eyebrow: 'Feed',
     title: 'Feed started',
     copy:
-      'Lullaby keeps the night log compact: feed timer, left or right side, bottle amount, and last feed context.',
+      'Start a feed with one thumb, keep the side visible, and leave bottle 70 ml one tap away.',
     phoneTitle: 'Feed started',
     timer: '12:08',
-    status: 'Left side running',
-    actions: ['Left', 'Right', 'Bottle'],
+    status: 'Left side',
+    actions: ['Left', 'Right', '70 ml'],
     noteLabel: 'Last feed',
     noteValue: '2h ago',
     details: [
       { label: 'Bottle', value: '70 ml' },
-      { label: 'Daily feeds', value: '6' },
+      { label: 'Right next', value: 'Ready' },
     ],
   },
   {
@@ -55,30 +55,30 @@ const productMoments = [
     eyebrow: 'Sleep',
     title: 'Sleep started',
     copy:
-      'A simple timer holds the moment without asking you to build a perfect routine at 3AM.',
+      'Mark sleep without building a routine. Start time, last nap, and wake window stay visible.',
     phoneTitle: 'Sleep started',
-    timer: '38:14',
-    status: 'Nap in progress',
+    timer: '3:31',
+    status: 'Started 3:31',
     actions: ['Asleep', 'Wake', 'Note'],
     noteLabel: 'Last nap',
-    noteValue: '1h 20m',
+    noteValue: '51 min ago',
     details: [
+      { label: 'Wake window', value: '1h 20m' },
       { label: 'Today', value: '4 naps' },
-      { label: 'Longest', value: '52 min' },
     ],
   },
   {
     key: 'diaper',
     eyebrow: 'Diaper',
-    title: 'Diaper logged',
+    title: 'Wet diaper logged',
     copy:
-      'Wet, dirty, or both gets captured in one pass, with daily counts ready for the morning handoff.',
-    phoneTitle: 'Diaper logged',
+      'Tap wet or dirty once. Daily count is ready for the morning handoff.',
+    phoneTitle: 'Wet logged',
     timer: '4:03',
-    status: 'Wet diaper saved',
+    status: 'Wet',
     actions: ['Wet', 'Dirty', 'Both'],
-    noteLabel: 'Today',
-    noteValue: '3 diapers',
+    noteLabel: 'Daily count',
+    noteValue: '3 today',
     details: [
       { label: 'Wet', value: '2' },
       { label: 'Dirty', value: '1' },
@@ -87,23 +87,23 @@ const productMoments = [
   {
     key: 'sync',
     eyebrow: 'Partner sync',
-    title: 'The recap is already there',
+    title: 'Morning recap is ready',
     copy:
-      'Bottle logged at 4:12 by your partner, plus bounded newborn guidance for common worries and clear red flags.',
-    phoneTitle: 'Partner update',
+      'Bottle logged at 4:12. Your partner will see it in the morning recap, with bounded guidance if a common newborn worry comes up.',
+    phoneTitle: 'Morning recap',
     timer: '4:12',
-    status: 'Bottle logged',
-    actions: ['Seen', 'Reply', 'Ask'],
-    noteLabel: 'Guidance',
-    noteValue: 'Red flags clear',
+    status: 'Bottle logged at 4:12',
+    actions: ['Seen', 'Reply', 'Done'],
+    noteLabel: 'Partner',
+    noteValue: 'Will see this',
     anchors: ['calm-answers', 'partner-sync'],
     details: [
-      { label: 'By partner', value: 'Bottle' },
-      { label: 'Amount', value: '80 ml' },
+      { label: 'Morning recap', value: 'Ready' },
+      { label: 'Bottle', value: '80 ml' },
     ],
     answer: {
-      question: 'Newborn guidance',
-      response: 'When to call is clear',
+      question: 'Common worry',
+      response: 'Red flags. Call your pediatrician if needed.',
     },
   },
 ]
@@ -502,10 +502,10 @@ onBeforeUnmount(() => {
 
           <div class="story-copy section-heading reveal-item">
             <p class="eyebrow">Track</p>
-            <h2 id="story-heading">Night shift in one hand.</h2>
+            <h2 id="story-heading">Last feed, diaper, sleep. Ready by morning.</h2>
             <p>
-              Log feeds, sleep, wet/dirty diapers, common newborn worries, and partner
-              handoffs without turning the night into admin.
+              Keep the night log short: feed, sleep, wet or dirty diaper, partner
+              handoff, and bounded help for a common newborn worry.
             </p>
           </div>
 
@@ -536,8 +536,8 @@ onBeforeUnmount(() => {
               <div v-if="moment.key === 'sync'" class="sync-moment story-sync">
                 <span class="sync-dot" aria-hidden="true"></span>
                 <div>
-                  <p>Bottle logged at 4:12 by your partner.</p>
-                  <small>You can sleep through the recap.</small>
+                  <p>Bottle logged at 4:12.</p>
+                  <small>Partner will see this in the morning recap.</small>
                 </div>
               </div>
             </article>
@@ -560,7 +560,7 @@ onBeforeUnmount(() => {
             <li v-for="item in notAnother" :key="item">{{ item }}</li>
           </ul>
 
-          <a class="primary-button" href="mailto:hello@lullaby.app?subject=Lullaby%20waitlist">
+          <a class="primary-button" href="#waitlist">
             Join the waitlist
           </a>
         </div>
