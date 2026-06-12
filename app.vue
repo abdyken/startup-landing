@@ -123,27 +123,27 @@ const faqs = [
   {
     question: 'Is this medical advice?',
     answer:
-      'No. Lullaby offers bounded newborn guidance for common worries, with clear signs for when to call your pediatrician. It does not diagnose, treat, or replace professional care.',
+      'No. Lullaby is not a diagnosis and does not replace your pediatrician. It gives bounded guidance for common newborn worries and highlights red flags for when to call a doctor.',
   },
   {
-    question: 'What can I track?',
+    question: 'What can I log?',
     answer:
-      'The first version focuses on last feed, breast side, bottle amount, sleep, wet/dirty diapers, recent events, and daily totals.',
+      'Feeds, breast side, bottle amount, sleep, wet or dirty diapers, and simple notes for the night.',
   },
   {
-    question: 'Can I share with my partner?',
+    question: 'Can I share the night log with my partner?',
     answer:
-      'Yes. Partner sync is core to the product, so both caregivers can see what happened without waking each other for a recap.',
+      'Yes. The goal is a quiet handoff: your partner can see last feed, diaper, sleep, and bottle logs without waking you.',
   },
   {
-    question: 'Is it for newborns only?',
+    question: 'What newborn worries are covered?',
     answer:
-      'Lullaby is designed for 0-12 month baby care, with the newborn night shift as the strongest first focus.',
+      'Common early worries like spit-up, hiccups, cluster feeding, gassiness, poop color, feeding often, and "is this normal?" moments - with clear boundaries and red flags.',
   },
   {
     question: 'When is it launching?',
     answer:
-      'The launch date is not public yet. Join the waitlist for one email when the first newborn-night beta opens.',
+      'Private beta first. Join the waitlist and you will get one email when the first newborn-night build opens.',
   },
 ]
 
@@ -328,8 +328,8 @@ onMounted(() => {
         }
       },
       {
-        rootMargin: '-38% 0px -42% 0px',
-        threshold: [0, 0.2, 0.45, 0.7],
+        rootMargin: '-32% 0px -36% 0px',
+        threshold: [0.15, 0.35, 0.58, 0.78],
       },
     )
 
@@ -585,7 +585,11 @@ onBeforeUnmount(() => {
         <div class="container">
           <div class="section-heading narrow">
             <p class="eyebrow">FAQ</p>
-            <h2>Newborn-night questions before launch.</h2>
+            <h2>Questions parents ask before 3AM.</h2>
+            <p>
+              Lullaby is built for simple night logging and bounded newborn guidance
+              - not diagnosis, not endless charts.
+            </p>
           </div>
 
           <div class="faq-list">
