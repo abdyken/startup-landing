@@ -344,12 +344,13 @@ summary:focus-visible {
   height: 100%;
   object-fit: cover;
   object-position: 50% 32%;
-  opacity: 0.62;
+  opacity: 0.78;
   pointer-events: none;
 }
 
-/* soft warm veil over the video: dims the moon behind the headline, keeps
-   the lower-mid area open so the video reads as atmosphere behind the phone */
+/* soft warm veil over the video: keeps a moderate wash through the headline
+   band, opens up the mid so the video reads as live atmosphere, and keeps a
+   strong fade near the bottom where the hero dissolves into the next section */
 .hero-media::after {
   content: "";
   position: absolute;
@@ -357,13 +358,34 @@ summary:focus-visible {
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(250, 246, 240, 0.7) 0%,
-    rgba(250, 246, 240, 0.5) 22%,
-    rgba(250, 246, 240, 0.32) 46%,
-    rgba(250, 246, 240, 0.46) 70%,
-    rgba(250, 246, 240, 0.88) 90%,
+    rgba(250, 246, 240, 0.6) 0%,
+    rgba(250, 246, 240, 0.42) 24%,
+    rgba(250, 246, 240, 0.2) 50%,
+    rgba(250, 246, 240, 0.28) 70%,
+    rgba(250, 246, 240, 0.86) 90%,
     rgba(250, 246, 240, 1) 100%
   );
+}
+
+/* localized readability veil sitting directly behind the headline copy so the
+   dark type keeps contrast over the now-livelier video — soft-edged, no box,
+   no glow. Lives below .hero-inner (z-2) and above the video. */
+.hero-shrink-stage::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  width: min(960px, 92%);
+  height: min(560px, 58svh);
+  pointer-events: none;
+  background: radial-gradient(
+    62% 58% at 50% 42%,
+    rgba(250, 246, 240, 0.42) 0%,
+    rgba(250, 246, 240, 0.24) 46%,
+    transparent 78%
+  );
+  transform: translateX(-50%);
 }
 
 .hero-shrink-stage::before {
@@ -744,6 +766,76 @@ summary:focus-visible {
   will-change: auto;
 }
 
+/* ── First-load entrance ──────────────────────────────────────────────
+   A calm settle-in for the above-the-fold hero + navbar on initial load
+   or refresh. `is-loading` is added to <html> by a tiny inline head script
+   before first paint, so the page starts from the dimmed state with no
+   flash; onMounted swaps it for `is-loaded`, whose transitions animate
+   everything to rest. Without JS the class is never set, so all SSR content
+   renders fully visible. Only containers are animated (never interactive
+   leaves), so button/link hover transitions stay untouched, and only
+   opacity/transform/filter change so there is no layout shift. */
+.is-loading .site-nav,
+.is-loading .hero-media,
+.is-loading .hero-copy,
+.is-loading .hero-device {
+  opacity: 0;
+}
+
+.is-loading .site-nav {
+  transform: translateX(-50%) translateY(-12px);
+}
+
+.is-loading .hero-copy {
+  transform: translateY(16px);
+  filter: blur(7px);
+}
+
+.is-loading .hero-device {
+  transform: translateY(22px);
+  filter: blur(9px);
+}
+
+.is-loaded .site-nav,
+.is-loaded .hero-media,
+.is-loaded .hero-copy,
+.is-loaded .hero-device {
+  opacity: 1;
+  transition:
+    opacity 600ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 640ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* copy + phone also release a soft blur as they settle */
+.is-loaded .hero-copy,
+.is-loaded .hero-device {
+  filter: blur(0);
+  transition:
+    opacity 600ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 640ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 600ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* subtle stagger: video wash → navbar → hero copy + CTA → phone */
+.is-loaded .hero-media {
+  transition-delay: 0ms;
+}
+
+.is-loaded .site-nav {
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 60ms;
+}
+
+.is-loaded .hero-copy {
+  transform: translateY(0);
+  transition-delay: 150ms;
+}
+
+.is-loaded .hero-device {
+  transform: translateY(0);
+  transition-delay: 250ms;
+}
+
 .section-heading {
   position: relative;
   z-index: 1;
@@ -772,15 +864,32 @@ summary:focus-visible {
   margin-top: 56px;
 }
 
-.flow-grid::before {
+/* Timeline connector: two soft bridges that sit ONLY in the gaps between the
+   staggered cards, behind the card surfaces (cards are z-index:1 and opaque, so
+   they cover everything except the column gaps). Each bridge sits at the
+   midpoint height of the two markers it links, so it descends with the
+   staircase instead of cutting a single flat line across the cards.
+   ::before bridges card 1 → card 2, ::after bridges card 2 → card 3. */
+.flow-grid::before,
+.flow-grid::after {
   content: "";
   position: absolute;
-  top: 43px;
-  left: 0;
-  right: 0;
+  width: 74px;
   height: 2px;
+  border-radius: 2px;
   background:
-    linear-gradient(90deg, rgba(232, 154, 119, 0) 0%, rgba(232, 154, 119, 0.45) 16%, rgba(232, 154, 119, 0.45) 84%, rgba(232, 154, 119, 0) 100%);
+    linear-gradient(90deg, rgba(232, 154, 119, 0) 0%, rgba(232, 154, 119, 0.42) 26%, rgba(232, 154, 119, 0.42) 74%, rgba(232, 154, 119, 0) 100%);
+  transform: translateX(-50%);
+}
+
+.flow-grid::before {
+  top: 60px;
+  left: calc((100% - 36px) / 3 + 9px);
+}
+
+.flow-grid::after {
+  top: 94px;
+  left: calc((100% - 36px) / 3 * 2 + 27px);
 }
 
 .flow-step {
@@ -1096,6 +1205,15 @@ summary:focus-visible {
 
 .product-story {
   overflow: visible;
+
+  /* Section-scoped active accent: lavender (matches the Hero phone splash/logo)
+     instead of peach. Only the Night Log active/highlight details use these —
+     card surfaces, CTA buttons, and the phone UI are untouched. */
+  --story-accent: #795EA8;
+  --story-accent-ink: #5B4A7D;
+  --story-accent-soft: rgba(121, 94, 168, 0.14);
+  --story-accent-border: rgba(121, 94, 168, 0.28);
+  --story-accent-glow: rgba(121, 94, 168, 0.16);
 }
 
 .product-story-grid {
@@ -1334,7 +1452,7 @@ summary:focus-visible {
     opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* peach accent rail that grows on the active (on-screen) moment */
+/* lavender accent rail that grows on the active (on-screen) moment */
 .story-moment::before {
   content: "";
   position: absolute;
@@ -1343,7 +1461,7 @@ summary:focus-visible {
   width: 3px;
   height: 0;
   border-radius: 0 3px 3px 0;
-  background: var(--peach);
+  background: var(--story-accent);
   opacity: 0;
   transform: translateY(-50%);
   transition:
@@ -1352,7 +1470,7 @@ summary:focus-visible {
 }
 
 .story-moment.is-active {
-  border-color: rgba(232, 154, 119, 0.36);
+  border-color: var(--story-accent-border);
   background:
     linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 240, 233, 0.94)),
     var(--surface);
@@ -1377,7 +1495,7 @@ summary:focus-visible {
 }
 
 .story-moment.is-active .story-count {
-  color: var(--peach-deep);
+  color: var(--story-accent-ink);
 }
 
 /* "On screen" tag links the active card to what the phone is showing */
@@ -1389,10 +1507,10 @@ summary:focus-visible {
   align-items: center;
   gap: 7px;
   padding: 5px 11px;
-  border: 1px solid rgba(232, 154, 119, 0.42);
+  border: 1px solid var(--story-accent-border);
   border-radius: 999px;
-  background: rgba(242, 183, 154, 0.18);
-  color: #7a4a22;
+  background: var(--story-accent-soft);
+  color: var(--story-accent-ink);
   font-family:
     "SFMono-Regular", Consolas, "Liberation Mono", ui-monospace, monospace;
   font-size: 0.64rem;
@@ -1405,20 +1523,20 @@ summary:focus-visible {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--peach);
-  box-shadow: 0 0 0 0 rgba(232, 154, 119, 0.5);
+  background: var(--story-accent);
+  box-shadow: 0 0 0 0 rgba(121, 94, 168, 0.5);
   animation: story-live-pulse 2.4s ease-out infinite;
 }
 
 @keyframes story-live-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(232, 154, 119, 0.5);
+    box-shadow: 0 0 0 0 rgba(121, 94, 168, 0.5);
   }
   70% {
-    box-shadow: 0 0 0 7px rgba(232, 154, 119, 0);
+    box-shadow: 0 0 0 7px rgba(121, 94, 168, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(232, 154, 119, 0);
+    box-shadow: 0 0 0 0 rgba(121, 94, 168, 0);
   }
 }
 
@@ -1437,6 +1555,13 @@ summary:focus-visible {
 .story-sync {
   grid-column: 2;
   margin-top: 22px;
+  border-color: var(--story-accent-border);
+  background: var(--story-accent-soft);
+}
+
+.story-sync .sync-dot {
+  background: var(--story-accent);
+  box-shadow: 0 0 0 7px var(--story-accent-glow);
 }
 
 .section-anchor {
@@ -1685,6 +1810,7 @@ summary:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  /* single-column: one clean vertical rail; the second desktop bridge is off */
   .flow-grid::before {
     top: 0;
     bottom: 0;
@@ -1692,8 +1818,14 @@ summary:focus-visible {
     right: auto;
     width: 2px;
     height: auto;
+    border-radius: 0;
+    transform: none;
     background:
       linear-gradient(180deg, rgba(232, 154, 119, 0) 0%, rgba(232, 154, 119, 0.4) 12%, rgba(232, 154, 119, 0.4) 88%, rgba(232, 154, 119, 0) 100%);
+  }
+
+  .flow-grid::after {
+    display: none;
   }
 
   .flow-step:nth-child(2),
@@ -1965,6 +2097,33 @@ summary:focus-visible {
     transform: none;
     transition: none;
     will-change: auto;
+  }
+
+  /* First-load entrance: no transform/blur motion, show content at once */
+  .is-loading .site-nav,
+  .is-loading .hero-media,
+  .is-loading .hero-copy,
+  .is-loading .hero-device,
+  .is-loaded .site-nav,
+  .is-loaded .hero-media,
+  .is-loaded .hero-copy,
+  .is-loaded .hero-device {
+    opacity: 1;
+    filter: none;
+    transition: none;
+    transition-delay: 0s;
+  }
+
+  .is-loading .site-nav,
+  .is-loaded .site-nav {
+    transform: translateX(-50%);
+  }
+
+  .is-loading .hero-copy,
+  .is-loading .hero-device,
+  .is-loaded .hero-copy,
+  .is-loaded .hero-device {
+    transform: none;
   }
 
   .phone-state-enter-active,

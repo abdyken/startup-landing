@@ -178,6 +178,21 @@ let cleanupSectionReveal = () => {}
 let cleanupProductStory = () => {}
 
 onMounted(() => {
+  // Release the first-load entrance (see main.css). The inline head script
+  // adds `is-loading` before first paint; swapping to `is-loaded` on the next
+  // frame lets the hero + navbar transition calmly to rest. Two frames keep
+  // the start state painted so the transition reliably fires.
+  const root = document.documentElement
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      root.classList.remove('is-loading')
+      root.classList.add('is-loaded')
+    })
+  })
+})
+
+onMounted(() => {
   const hero = heroRef.value
   const root = document.documentElement
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
