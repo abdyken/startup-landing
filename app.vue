@@ -1,8 +1,80 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { getSupabaseClient } from './utils/supabaseClient'
 
 const heroRef = ref(null)
 const activeProductMomentIndex = ref(0)
+
+// --- Waitlist (Early Access form) -----------------------------------------
+const config = useRuntimeConfig()
+
+const waitlistEmail = ref('')
+const waitlistLoading = ref(false)
+const waitlistStatus = ref('') // '' | 'success' | 'error'
+const waitlistMessage = ref('')
+
+// Same basic shape as the RLS check on the table; we still trim + lowercase
+// before sending, and Postgres enforces the real constraint server-side.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const MESSAGES = {
+  invalid: 'Enter a valid email.',
+  duplicate: 'You’re already on the list.',
+  success: 'You’re on the list. We’ll email you when Lullaby opens.',
+  error: 'Something went wrong. Try again in a moment.',
+}
+
+const setStatus = (status, message) => {
+  waitlistStatus.value = status
+  waitlistMessage.value = message
+}
+
+const handleWaitlistSubmit = async () => {
+  // Prevent double submit while a request is in flight.
+  if (waitlistLoading.value) {
+    return
+  }
+
+  const email = waitlistEmail.value.trim().toLowerCase()
+
+  if (!EMAIL_PATTERN.test(email)) {
+    setStatus('error', MESSAGES.invalid)
+    return
+  }
+
+  waitlistLoading.value = true
+  setStatus('', '')
+
+  try {
+    const supabase = getSupabaseClient(
+      config.public.supabaseUrl,
+      config.public.supabaseAnonKey,
+    )
+
+    const { error } = await supabase
+      .from('waitlist')
+      .insert({ email, source: 'landing' })
+
+    if (error) {
+      // 23505 = unique_violation on the email column → already signed up.
+      if (error.code === '23505') {
+        setStatus('success', MESSAGES.duplicate)
+        waitlistEmail.value = ''
+        return
+      }
+
+      setStatus('error', MESSAGES.error)
+      return
+    }
+
+    setStatus('success', MESSAGES.success)
+    waitlistEmail.value = ''
+  } catch {
+    setStatus('error', MESSAGES.error)
+  } finally {
+    waitlistLoading.value = false
+  }
+}
 
 // Served from public/ at runtime; bound dynamically so it isn't statically
 // bundled by Vite (keeps the build green if the asset isn't committed yet).
@@ -619,22 +691,42 @@ onBeforeUnmount(() => {
             <li v-for="item in notAnother" :key="item">{{ item }}</li>
           </ul>
 
-          <form class="waitlist-form" @submit.prevent aria-label="Join the Lullaby waitlist">
+          <form
+            class="waitlist-form"
+            @submit.prevent="handleWaitlistSubmit"
+            aria-label="Join the Lullaby waitlist"
+          >
             <label class="sr-only" for="waitlist-email">Email address</label>
             <input
               id="waitlist-email"
+              v-model="waitlistEmail"
               class="waitlist-input"
               type="email"
               name="email"
               placeholder="your@email.com"
               autocomplete="email"
               inputmode="email"
+              :disabled="waitlistLoading"
               required
             />
-            <button class="primary-button waitlist-submit" type="submit">
-              Join the waitlist
+            <button
+              class="primary-button waitlist-submit"
+              type="submit"
+              :disabled="waitlistLoading"
+            >
+              {{ waitlistLoading ? 'Joining…' : 'Join the waitlist' }}
             </button>
           </form>
+
+          <p
+            v-if="waitlistMessage"
+            class="waitlist-status"
+            :class="`is-${waitlistStatus}`"
+            role="status"
+            aria-live="polite"
+          >
+            {{ waitlistMessage }}
+          </p>
         </div>
       </section>
 

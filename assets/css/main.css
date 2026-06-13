@@ -135,6 +135,15 @@ p {
   scroll-margin-top: 104px;
 }
 
+/* The waitlist is a single card, not a top-down reading section, so the anchor
+   should frame the CARD rather than the section's top edge. The section's large
+   top padding would otherwise drop the card ~250px down and clip its bottom.
+   Subtract that same padding so the card lands ~92px from the top — a calm gap
+   under the ~74px fixed navbar — and self-adjusts with the responsive padding. */
+#waitlist {
+  scroll-margin-top: calc(92px - clamp(96px, 13vw, 168px));
+}
+
 .site-nav {
   position: fixed;
   top: 16px;
@@ -483,6 +492,10 @@ summary:focus-visible {
   display: grid;
   place-items: center;
   width: min(360px, 82vw);
+  /* Decorative phone preview. Its ::before glow is 760px wide and overlaps the
+     hero CTA, and .hero-device stacks above .hero-copy — so without this the
+     glow swallows clicks on "Join the waitlist". Nothing here is interactive. */
+  pointer-events: none;
 }
 
 .hero-device::before {
@@ -1675,6 +1688,17 @@ summary:focus-visible {
   min-width: 214px;
 }
 
+.waitlist-status {
+  margin: 0;
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--steel);
+}
+
+.waitlist-status.is-error {
+  color: #c2603d;
+}
+
 .cta-note {
   color: var(--steel);
   font-size: 0.92rem;
@@ -1902,13 +1926,44 @@ summary:focus-visible {
 }
 
 .footer-col a {
+  position: relative;
   width: fit-content;
-  transition: color 200ms ease;
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+/* soft navy underline that grows in on hover/focus — no layout shift (it lives
+   in the gap below the link) and no orange/CTA color. */
+.footer-col a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -2px;
+  left: 0;
+  height: 1px;
+  background: var(--steel);
+  opacity: 0.5;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 220ms ease;
 }
 
 .footer-col a:hover,
 .footer-col a:focus-visible {
-  color: var(--steel);
+  color: var(--ink);
+  transform: translateX(2px);
+}
+
+.footer-col a:hover::after,
+.footer-col a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.footer-col a:focus-visible {
+  outline: 2px solid var(--steel);
+  outline-offset: 4px;
+  border-radius: 3px;
 }
 
 .footer-note {
@@ -2060,6 +2115,13 @@ summary:focus-visible {
   .section {
     padding-block: 76px;
     scroll-margin-top: 88px;
+  }
+
+  /* Mobile: section padding is 76px and the navbar bottom sits ~68px down, so
+     land the card ~84px from the top (subtract the 76px padding → 8px). Keeps
+     the card framed just under the navbar instead of dropped 200px low. */
+  #waitlist {
+    scroll-margin-top: calc(84px - 76px);
   }
 
   .section-anchor {
@@ -2266,6 +2328,17 @@ summary:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  /* Keep the footer-link color shift + underline, drop the slide motion. */
+  .footer-col a,
+  .footer-col a::after {
+    transition: none;
+  }
+
+  .footer-col a:hover,
+  .footer-col a:focus-visible {
+    transform: none;
   }
 
   .hero {

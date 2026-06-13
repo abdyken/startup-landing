@@ -1,6 +1,15 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-06-11',
   css: ['~/assets/css/main.css'],
+  // Public Supabase credentials. Nuxt maps NUXT_PUBLIC_SUPABASE_URL ->
+  // public.supabaseUrl and NUXT_PUBLIC_SUPABASE_ANON_KEY -> public.supabaseAnonKey
+  // at runtime. The anon key is public by design; RLS guards the table.
+  runtimeConfig: {
+    public: {
+      supabaseUrl: '',
+      supabaseAnonKey: '',
+    },
+  },
   app: {
     head: {
       title: 'Lullaby - the 3AM companion for newborn nights',
