@@ -6,8 +6,8 @@ const activeProductMomentIndex = ref(0)
 
 const navLinks = [
   { href: '#flow', label: '3AM flow' },
-  { href: '#night-log', label: 'Night log' },
-  { href: '#partner-sync', label: 'Partner sync' },
+  { href: '#nightlog', label: 'Night log' },
+  { href: '#partnersync', label: 'Partner sync' },
   { href: '#faq', label: 'FAQ' },
 ]
 
@@ -41,7 +41,7 @@ const productMoments = [
       'Start a feed with one thumb, keep the side visible, and leave bottle 70 ml one tap away.',
     phoneTitle: 'Feed started',
     timer: '12:08',
-    status: 'Left side',
+    status: 'Left side, 11 min',
     actions: ['Left', 'Right', '70 ml'],
     noteLabel: 'Last feed',
     noteValue: '2h ago',
@@ -49,6 +49,10 @@ const productMoments = [
       { label: 'Bottle', value: '70 ml' },
       { label: 'Right next', value: 'Ready' },
     ],
+    event: {
+      title: 'Feed started at 3:12.',
+      detail: 'Left side logged, 11 min in.',
+    },
   },
   {
     key: 'sleep',
@@ -66,6 +70,10 @@ const productMoments = [
       { label: 'Wake window', value: '1h 20m' },
       { label: 'Today', value: '4 naps' },
     ],
+    event: {
+      title: 'Sleep started at 4:36.',
+      detail: 'Last nap ended 51 min ago.',
+    },
   },
   {
     key: 'diaper',
@@ -75,7 +83,7 @@ const productMoments = [
       'Tap wet or dirty once. Daily count is ready for the morning handoff.',
     phoneTitle: 'Wet logged',
     timer: '4:03',
-    status: 'Wet',
+    status: 'Wet, logged 3:48',
     actions: ['Wet', 'Dirty', 'Both'],
     noteLabel: 'Daily count',
     noteValue: '3 today',
@@ -83,6 +91,10 @@ const productMoments = [
       { label: 'Wet', value: '2' },
       { label: 'Dirty', value: '1' },
     ],
+    event: {
+      title: 'Diaper changed at 3:48.',
+      detail: 'Third wet diaper saved for today.',
+    },
   },
   {
     key: 'sync',
@@ -96,7 +108,7 @@ const productMoments = [
     actions: ['Seen', 'Reply', 'Done'],
     noteLabel: 'Partner',
     noteValue: 'Will see this',
-    anchors: ['calm-answers', 'partner-sync'],
+    anchors: ['calmanswers', 'partnersync'],
     details: [
       { label: 'Morning recap', value: 'Ready' },
       { label: 'Bottle', value: '80 ml' },
@@ -104,6 +116,10 @@ const productMoments = [
     answer: {
       question: 'Common worry',
       response: 'Red flags. Call your pediatrician if needed.',
+    },
+    event: {
+      title: 'Partner saw the recap.',
+      detail: 'Morning recap includes 4 night events.',
     },
   },
 ]
@@ -138,12 +154,12 @@ const faqs = [
   {
     question: 'What newborn worries are covered?',
     answer:
-      'Common early worries like spit-up, hiccups, cluster feeding, gassiness, poop color, feeding often, and "is this normal?" moments - with clear boundaries and red flags.',
+      'Common early worries like spitup, hiccups, cluster feeding, gassiness, poop color, feeding often, and "is this normal?" moments with clear boundaries and red flags.',
   },
   {
     question: 'When is it launching?',
     answer:
-      'Private beta first. Join the waitlist and you will get one email when the first newborn-night build opens.',
+      'Private beta first. Join the waitlist and you will get one email when the first newbornnight build opens.',
   },
 ]
 
@@ -387,36 +403,40 @@ onBeforeUnmount(() => {
             <div class="hero-inner">
               <div class="hero-copy">
                 <p class="eyebrow">For the newborn night shift</p>
-                <h1 id="hero-heading">One-handed logs for 3AM feeds, diapers, and sleep</h1>
+                <h1 id="hero-heading">One handed logs for 3AM feeds, diapers, and sleep.</h1>
                 <p class="hero-subcopy">
                   In the dim room, save breast side, bottle amount, wet or dirty
                   diaper, and sleep without waking yourself up. For common newborn
                   worries, Lullaby shows bounded guidance, clear red flags, and when
-                  to call your pediatrician - not a diagnosis.
+                  to call your pediatrician not a diagnosis.
                 </p>
                 <a class="primary-button" href="#waitlist">Join the waitlist</a>
-                <p class="microcopy">Private beta. One email when the newborn-night build opens.</p>
               </div>
 
               <div class="hero-device" aria-label="Lullaby phone preview">
                 <div class="phone phone-hero">
-                  <div class="phone-top">
-                    <span>3:12</span>
-                    <span>Night mode</span>
-                  </div>
-                  <div class="phone-main">
-                    <p class="phone-kicker">Tonight</p>
-                    <h2>Feed running</h2>
-                    <div class="timer">12:08</div>
-                    <div class="quick-actions" aria-label="Quick logging actions">
-                      <span>Feed</span>
-                      <span>Sleep</span>
-                      <span>Diaper</span>
+                  <span class="phone-side phone-side-volume" aria-hidden="true"></span>
+                  <span class="phone-side phone-side-volume-lower" aria-hidden="true"></span>
+                  <span class="phone-side phone-side-power" aria-hidden="true"></span>
+                  <div class="phone-screen">
+                    <div class="phone-top">
+                      <span>3:12</span>
+                      <span>Night mode</span>
                     </div>
-                  </div>
-                  <div class="phone-note">
-                    <span>Last feed</span>
-                    <strong>2h ago</strong>
+                    <div class="phone-main">
+                      <p class="phone-kicker">Tonight</p>
+                      <h2>Feed running</h2>
+                      <div class="timer">12:08</div>
+                      <div class="quick-actions" aria-label="Quick logging actions">
+                        <span>Feed</span>
+                        <span>Sleep</span>
+                        <span>Diaper</span>
+                      </div>
+                    </div>
+                    <div class="phone-note">
+                      <span>Last feed</span>
+                      <strong>2h ago</strong>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -430,7 +450,7 @@ onBeforeUnmount(() => {
         <div class="container">
           <div class="section-heading narrow">
             <p class="eyebrow">3AM flow</p>
-            <h2>A small night record for the wake-ups you barely remember.</h2>
+            <h2>A small night record for the wakeups you barely remember.</h2>
           </div>
 
           <div class="flow-grid">
@@ -457,12 +477,16 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section id="night-log" class="product-story section motion-ready" aria-labelledby="story-heading">
+      <section id="nightlog" class="product-story section motion-ready" aria-labelledby="story-heading">
         <span class="section-word section-word-right" aria-hidden="true">NIGHT</span>
         <div class="container product-story-grid">
           <div class="story-visual reveal-item">
             <div class="story-phone-stage" aria-label="Lullaby product preview">
               <div class="phone story-phone" :class="`story-phone-${activeProductMoment.key}`">
+                <span class="phone-side phone-side-volume" aria-hidden="true"></span>
+                <span class="phone-side phone-side-volume-lower" aria-hidden="true"></span>
+                <span class="phone-side phone-side-power" aria-hidden="true"></span>
+                <div class="phone-screen">
                 <div class="phone-top">
                   <span>3:12</span>
                   <span>Night mode</span>
@@ -496,6 +520,7 @@ onBeforeUnmount(() => {
                     </div>
                   </div>
                 </Transition>
+                </div>
               </div>
             </div>
           </div>
@@ -533,11 +558,11 @@ onBeforeUnmount(() => {
                 <p>{{ moment.copy }}</p>
               </div>
 
-              <div v-if="moment.key === 'sync'" class="sync-moment story-sync">
+              <div v-if="moment.event" class="sync-moment story-sync">
                 <span class="sync-dot" aria-hidden="true"></span>
                 <div>
-                  <p>Bottle logged at 4:12.</p>
-                  <small>Partner will see this in the morning recap.</small>
+                  <p>{{ moment.event.title }}</p>
+                  <small>{{ moment.event.detail }}</small>
                 </div>
               </div>
             </article>
@@ -549,7 +574,7 @@ onBeforeUnmount(() => {
         <div class="container final-inner reveal-item">
           <div class="section-heading narrow">
             <p class="eyebrow">Early access</p>
-            <h2>Get the first newborn-night build.</h2>
+            <h2>Get the first newbornnight build.</h2>
             <p>
               For parents logging feeds, diapers, sleep, and partner handoffs at
               3AM. One email when the private beta opens.
@@ -576,8 +601,6 @@ onBeforeUnmount(() => {
               Join the waitlist
             </button>
           </form>
-          <p class="cta-note">Bounded newborn guidance. Not medical diagnosis.</p>
-          <p class="cta-helper">One email when the private beta opens. No spam.</p>
         </div>
       </section>
 
@@ -588,7 +611,7 @@ onBeforeUnmount(() => {
             <h2>Questions parents ask before 3AM.</h2>
             <p>
               Lullaby is built for simple night logging and bounded newborn guidance
-              - not diagnosis, not endless charts.
+              not diagnosis, not endless charts.
             </p>
           </div>
 
