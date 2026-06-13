@@ -318,8 +318,8 @@ summary:focus-visible {
   align-content: center;
   width: 100vw;
   margin-inline: calc(50% - 50vw);
-  min-height: calc(var(--hero-height) + clamp(220px, 24svh, 320px));
-  padding: 108px 0 64px;
+  min-height: calc(var(--hero-height) + clamp(150px, 18svh, 240px));
+  padding: 92px 0 52px;
   overflow: hidden;
   border-radius: var(--hero-radius);
   background: var(--bg);
@@ -343,11 +343,13 @@ summary:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 32%;
   opacity: 0.62;
   pointer-events: none;
 }
 
-/* soft warm veil over the video: keeps the light hero mood + text contrast */
+/* soft warm veil over the video: dims the moon behind the headline, keeps
+   the lower-mid area open so the video reads as atmosphere behind the phone */
 .hero-media::after {
   content: "";
   position: absolute;
@@ -355,9 +357,10 @@ summary:focus-visible {
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(250, 246, 240, 0.58) 0%,
-    rgba(250, 246, 240, 0.34) 42%,
-    rgba(245, 239, 232, 0.62) 100%
+    rgba(250, 246, 240, 0.7) 0%,
+    rgba(250, 246, 240, 0.5) 22%,
+    rgba(250, 246, 240, 0.32) 48%,
+    rgba(245, 239, 232, 0.6) 100%
   );
 }
 
@@ -397,7 +400,7 @@ summary:focus-visible {
   z-index: 2;
   display: grid;
   justify-items: center;
-  gap: clamp(30px, 4vw, 46px);
+  gap: clamp(20px, 2.6vw, 28px);
   width: min(var(--max), 100%);
   margin: auto;
   padding-inline: 20px;
@@ -406,7 +409,7 @@ summary:focus-visible {
 .hero-copy {
   display: grid;
   justify-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 
 .hero-copy h1 {
@@ -414,9 +417,9 @@ summary:focus-visible {
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  font-size: clamp(3.2rem, 6.65vw, 6.35rem);
+  font-size: clamp(3.2rem, 6.05vw, 5.9rem);
   font-weight: 760;
-  line-height: 0.99;
+  line-height: 1.02;
 }
 
 .eyebrow {
@@ -430,10 +433,10 @@ summary:focus-visible {
 }
 
 .hero-subcopy {
-  max-width: 680px;
+  max-width: 700px;
   color: var(--cream-soft);
-  font-size: clamp(1.08rem, 2vw, 1.32rem);
-  line-height: 1.65;
+  font-size: clamp(1.06rem, 1.9vw, 1.24rem);
+  line-height: 1.55;
 }
 
 .microcopy {
