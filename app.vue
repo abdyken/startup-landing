@@ -439,13 +439,11 @@ onBeforeUnmount(() => {
 
             <div class="hero-inner">
               <div class="hero-copy">
-                <p class="eyebrow">For the newborn night shift</p>
-                <h1 id="hero-heading">One handed logs for 3AM feeds, diapers, and sleep.</h1>
+                <p class="eyebrow">For exhausted new parents</p>
+                <h1 id="hero-heading">Track the night.<br />Wake up clear.</h1>
                 <p class="hero-subcopy">
-                  In the dim room, save breast side, bottle amount, wet or dirty
-                  diaper, and sleep without waking yourself up. For common newborn
-                  worries, Lullaby shows bounded guidance, clear red flags, and when
-                  to call your pediatrician not a diagnosis.
+                  Log feeds, diapers, and sleep in seconds at 3AM. Lullaby turns
+                  the night into a calm morning recap for you and your partner.
                 </p>
                 <a class="primary-button" href="#waitlist">Join the waitlist</a>
               </div>
@@ -667,8 +665,56 @@ onBeforeUnmount(() => {
     </main>
 
     <footer class="site-footer">
-      <p>Lullaby is not medical diagnosis. Always contact your pediatrician or healthcare provider with medical concerns.</p>
-      <span>© 2026 Lullaby</span>
+      <img
+        class="footer-mark"
+        src="/images/lullaby-logo-mark.png"
+        alt=""
+        aria-hidden="true"
+        width="560"
+        height="373"
+      />
+
+      <div class="footer-top reveal-item">
+        <div class="footer-close">
+          <p class="footer-brand-line">For the newborn night shift.</p>
+          <p class="footer-lead">
+            One-handed logs, calm morning recaps, and bounded guidance for the
+            moments that feel bigger at 3AM.
+          </p>
+        </div>
+
+        <nav class="footer-cols" aria-label="Footer">
+          <div class="footer-col">
+            <h3 class="footer-col-title">Product</h3>
+            <a href="#flow">3AM flow</a>
+            <a href="#nightlog">Night log</a>
+            <a href="#partnersync">Partner sync</a>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-col-title">Support</h3>
+            <a href="#faq">FAQ</a>
+            <a href="#waitlist">Waitlist</a>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-col-title">Note</h3>
+            <span class="footer-note">Not medical advice</span>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer-legal">
+        <a href="#top" class="brand footer-brand" aria-label="Lullaby home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Lullaby</span>
+        </a>
+        <span class="footer-copy">© 2026 Lullaby</span>
+        <p>
+          Lullaby is not medical diagnosis. Always contact your pediatrician or
+          healthcare provider with medical concerns.
+        </p>
+      </div>
     </footer>
   </div>
 </template>
