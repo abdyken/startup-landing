@@ -398,6 +398,20 @@ onBeforeUnmount(() => {
       <section ref="heroRef" class="hero" aria-labelledby="hero-heading">
         <div class="hero-sticky">
           <div class="hero-shrink-stage">
+            <div class="hero-media" aria-hidden="true">
+              <video
+                class="hero-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-hidden="true"
+              >
+                <source src="/videos/lullaby-hero.mp4" type="video/mp4" />
+              </video>
+            </div>
+
             <span class="hero-ghost" aria-hidden="true">03:00</span>
 
             <div class="hero-inner">
