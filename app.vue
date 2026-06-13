@@ -4,6 +4,10 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 const heroRef = ref(null)
 const activeProductMomentIndex = ref(0)
 
+// Served from public/ at runtime; bound dynamically so it isn't statically
+// bundled by Vite (keeps the build green if the asset isn't committed yet).
+const heroSplashLogo = '/images/lullaby-logo-mark.png'
+
 const navLinks = [
   { href: '#flow', label: '3AM flow' },
   { href: '#nightlog', label: 'Night log' },
@@ -40,6 +44,7 @@ const productMoments = [
     copy:
       'Start a feed with one thumb, keep the side visible, and leave bottle 70 ml one tap away.',
     phoneTitle: 'Feed started',
+    clock: '3:12',
     timer: '12:08',
     status: 'Left side, 11 min',
     actions: ['Left', 'Right', '70 ml'],
@@ -61,6 +66,7 @@ const productMoments = [
     copy:
       'Mark sleep without building a routine. Start time, last nap, and wake window stay visible.',
     phoneTitle: 'Sleep started',
+    clock: '4:36',
     timer: '3:31',
     status: 'Started 3:31',
     actions: ['Asleep', 'Wake', 'Note'],
@@ -82,6 +88,7 @@ const productMoments = [
     copy:
       'Tap wet or dirty once. Daily count is ready for the morning handoff.',
     phoneTitle: 'Wet logged',
+    clock: '3:48',
     timer: '4:03',
     status: 'Wet, logged 3:48',
     actions: ['Wet', 'Dirty', 'Both'],
@@ -101,16 +108,17 @@ const productMoments = [
     eyebrow: 'Partner sync',
     title: 'Morning recap is ready',
     copy:
-      'Bottle logged at 4:12. Your partner will see it in the morning recap, with bounded guidance if a common newborn worry comes up.',
+      'One of you logs the night. The other wakes to a calm recap of last feed, sleep, and diapers, with no 3AM debrief needed.',
     phoneTitle: 'Morning recap',
+    clock: '7:04',
     timer: '4:12',
-    status: 'Bottle logged at 4:12',
-    actions: ['Seen', 'Reply', 'Done'],
+    status: 'Last feed at 4:12',
+    actions: ['3 feeds', '4h sleep', '3 diapers'],
     noteLabel: 'Partner',
-    noteValue: 'Will see this',
+    noteValue: 'Seen 7:04',
     anchors: ['calmanswers', 'partnersync'],
     details: [
-      { label: 'Morning recap', value: 'Ready' },
+      { label: 'Night log', value: '4 events' },
       { label: 'Bottle', value: '80 ml' },
     ],
     answer: {
@@ -119,7 +127,7 @@ const productMoments = [
     },
     event: {
       title: 'Partner saw the recap.',
-      detail: 'Morning recap includes 4 night events.',
+      detail: 'Last feed, sleep, and 3 diapers — 4 night events.',
     },
   },
 ]
@@ -433,23 +441,14 @@ onBeforeUnmount(() => {
                   <span class="phone-side phone-side-volume-lower" aria-hidden="true"></span>
                   <span class="phone-side phone-side-power" aria-hidden="true"></span>
                   <div class="phone-screen">
-                    <div class="phone-top">
-                      <span>3:12</span>
-                      <span>Night mode</span>
-                    </div>
-                    <div class="phone-main">
-                      <p class="phone-kicker">Tonight</p>
-                      <h2>Feed running</h2>
-                      <div class="timer">12:08</div>
-                      <div class="quick-actions" aria-label="Quick logging actions">
-                        <span>Feed</span>
-                        <span>Sleep</span>
-                        <span>Diaper</span>
-                      </div>
-                    </div>
-                    <div class="phone-note">
-                      <span>Last feed</span>
-                      <strong>2h ago</strong>
+                    <div class="hero-phone-splash">
+                      <img
+                        class="hero-phone-splash-logo"
+                        :src="heroSplashLogo"
+                        alt="Lullaby"
+                        width="220"
+                        height="220"
+                      />
                     </div>
                   </div>
                 </div>
@@ -502,7 +501,7 @@ onBeforeUnmount(() => {
                 <span class="phone-side phone-side-power" aria-hidden="true"></span>
                 <div class="phone-screen">
                 <div class="phone-top">
-                  <span>3:12</span>
+                  <span>{{ activeProductMoment.clock }}</span>
                   <span>Night mode</span>
                 </div>
                 <Transition name="phone-state" mode="out-in">
@@ -566,6 +565,14 @@ onBeforeUnmount(() => {
                 aria-hidden="true"
               ></span>
               <span class="story-count">0{{ index + 1 }}</span>
+              <span
+                v-if="activeProductMomentIndex === index"
+                class="story-live"
+                aria-hidden="true"
+              >
+                <span class="story-live-dot"></span>
+                On screen
+              </span>
               <div>
                 <p class="eyebrow">{{ moment.eyebrow }}</p>
                 <h3>{{ moment.title }}</h3>
