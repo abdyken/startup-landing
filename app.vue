@@ -665,16 +665,16 @@ onBeforeUnmount(() => {
     </main>
 
     <footer class="site-footer">
-      <img
-        class="footer-mark"
-        src="/images/lullaby-logo-mark.png"
-        alt=""
-        aria-hidden="true"
-        width="560"
-        height="373"
-      />
-
       <div class="footer-top reveal-item">
+        <img
+          class="footer-mark"
+          src="/images/lullaby-logo-mark.png"
+          alt=""
+          aria-hidden="true"
+          width="560"
+          height="373"
+        />
+
         <div class="footer-close">
           <p class="footer-brand-line">For the newborn night shift.</p>
           <p class="footer-lead">
@@ -705,12 +705,14 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="footer-legal">
-        <a href="#top" class="brand footer-brand" aria-label="Lullaby home">
-          <span class="brand-mark" aria-hidden="true"></span>
-          <span>Lullaby</span>
-        </a>
-        <span class="footer-copy">© 2026 Lullaby</span>
-        <p>
+        <div class="footer-legal-brand">
+          <a href="#top" class="brand footer-brand" aria-label="Lullaby home">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>Lullaby</span>
+          </a>
+          <span class="footer-copy">© 2026 Lullaby</span>
+        </div>
+        <p class="footer-disclaimer">
           Lullaby is not medical diagnosis. Always contact your pediatrician or
           healthcare provider with medical concerns.
         </p>

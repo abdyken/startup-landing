@@ -1788,44 +1788,68 @@ summary:focus-visible {
   position: relative;
   isolation: isolate;
   overflow: clip;
-  margin-top: clamp(40px, 7vw, 96px);
-  padding-block: clamp(56px, 7vw, 92px) clamp(26px, 3vw, 36px);
-  border-top: 1px solid var(--line);
+  /* strong negative pull closes most of the gap left by the FAQ section's
+     large bottom padding, so the outro sits close under the last question */
+  margin-top: clamp(-148px, -9vw, -72px);
+  padding-block: clamp(48px, 5vw, 72px) clamp(30px, 3vw, 40px);
   background:
-    radial-gradient(120% 78% at 78% -10%, rgba(203, 207, 236, 0.24), transparent 58%),
-    linear-gradient(180deg, rgba(255, 253, 248, 0) 0%, rgba(245, 239, 232, 0.5) 100%);
+    radial-gradient(95% 120% at 76% 36%, rgba(203, 207, 236, 0.26), transparent 62%),
+    linear-gradient(180deg, rgba(255, 253, 248, 0) 0%, rgba(245, 239, 232, 0.62) 64%, rgba(245, 239, 232, 0.78) 100%);
 }
 
-/* ambient brand mark — large, soft, anchored right and bleeding off-edge */
-.footer-mark {
+/* soft centered hairline that fades at both ends — a quiet divider, not a slab.
+   Sits at the narrower content width so it frames the composed outro block. */
+.site-footer::before {
+  content: "";
   position: absolute;
-  top: 50%;
-  right: clamp(-160px, -6vw, -40px);
-  z-index: -1;
-  width: min(520px, 64vw);
-  height: auto;
-  opacity: 0.05;
-  pointer-events: none;
-  user-select: none;
-  transform: translateY(-58%);
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1040px, calc(100% - 40px));
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--line) 14%,
+    var(--line) 86%,
+    transparent
+  );
 }
 
-/* brand moment (left) + link groups (right), aligned on the top */
+/* brand moment (left) + link groups (right) — held in a narrower column so the
+   two sides read as one composed block instead of islands at opposite edges */
 .footer-top {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: start;
   justify-content: space-between;
-  gap: clamp(36px, 6vw, 96px);
-  width: min(var(--max), calc(100% - 40px));
+  gap: clamp(32px, 5vw, 72px);
+  width: min(1040px, calc(100% - 40px));
   margin-inline: auto;
+}
+
+/* ambient brand watermark — large and soft, sitting behind the right-side link
+   columns and vertically centered on the outro block, masked so it dissolves */
+.footer-mark {
+  position: absolute;
+  top: 42%;
+  right: clamp(-64px, -1.5vw, 8px);
+  z-index: -1;
+  width: min(460px, 58vw);
+  height: auto;
+  opacity: 0.09;
+  pointer-events: none;
+  user-select: none;
+  transform: translateY(-50%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 54%, transparent 92%);
+  mask-image: radial-gradient(closest-side, #000 54%, transparent 92%);
 }
 
 .footer-close {
   display: grid;
   gap: clamp(14px, 1.6vw, 20px);
-  max-width: 30rem;
+  max-width: 28rem;
 }
 
 .footer-brand-line {
@@ -1891,33 +1915,42 @@ summary:focus-visible {
   color: var(--muted);
 }
 
-/* legal row: brand wordmark, copyright, disclaimer — calm and muted */
+/* legal row: brand + copyright grouped left, disclaimer balanced right */
 .footer-legal {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 22px;
-  width: min(var(--max), calc(100% - 40px));
-  margin: clamp(40px, 5vw, 60px) auto 0;
-  padding-top: clamp(22px, 2.6vw, 30px);
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 40px;
+  width: min(1040px, calc(100% - 40px));
+  margin: clamp(30px, 3.4vw, 46px) auto 0;
+  padding-top: clamp(20px, 2.2vw, 28px);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.84rem;
+  font-size: 0.88rem;
+}
+
+.footer-legal-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
 }
 
 .footer-legal .footer-brand {
-  margin-right: auto;
-  font-size: 1.05rem;
+  font-size: 1.12rem;
 }
 
 .footer-copy {
   color: var(--muted);
 }
 
-.footer-legal p {
-  flex: 1 1 380px;
-  max-width: 620px;
+.footer-disclaimer {
+  flex: 1 1 340px;
+  max-width: 480px;
+  margin: 0;
   color: var(--muted);
+  line-height: 1.55;
+  text-align: right;
 }
 
 @media (max-width: 980px) {
@@ -2208,8 +2241,25 @@ summary:focus-visible {
     gap: 28px 40px;
   }
 
+  /* on a stacked layout the watermark drops to the lower-right corner and
+     softens further so it never crowds the columns */
+  .footer-mark {
+    top: auto;
+    bottom: clamp(-48px, -8vw, -16px);
+    right: clamp(-56px, -8vw, -16px);
+    width: min(320px, 64vw);
+    opacity: 0.06;
+    transform: none;
+  }
+
   .footer-legal {
-    gap: 6px 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .footer-disclaimer {
+    text-align: left;
   }
 }
 
