@@ -20,6 +20,16 @@ export default defineNuxtConfig({
             'Lullaby helps exhausted new parents track feeds, sleep, and diapers one-handed in the dark, with calm bounded reassurance and partner sync.',
         },
       ],
+      // Fonts for the phone mockup component only. The font-family is applied
+      // strictly inside `.lb-phone`, so landing typography is untouched.
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800;900&display=swap',
+        },
+      ],
       // Lock the page background to the cream tone before main.css parses so a
       // refresh never flashes white behind the hero video.
       style: [{ innerHTML: 'html{background-color:#FAF6F0}' }],

@@ -208,6 +208,13 @@ const activeProductMoment = computed(
   () => productMoments[activeProductMomentIndex.value] ?? productMoments[0],
 )
 
+// Map the active story step's key to the phone-mockup state. The story uses
+// `sync` for the partner step; the mockup expects `partner`.
+const phoneMockupState = computed(() => {
+  const map = { feed: 'feed', sleep: 'sleep', diaper: 'diaper', sync: 'partner' }
+  return map[activeProductMoment.value.key] ?? 'sleep'
+})
+
 const notAnother = [
   'Last feed saved',
   'Partner handoff ready',
@@ -580,46 +587,7 @@ onBeforeUnmount(() => {
         <div class="container product-story-grid">
           <div class="story-visual reveal-item">
             <div class="story-phone-stage" aria-label="Lullaby product preview">
-              <div class="phone story-phone" :class="`story-phone-${activeProductMoment.key}`">
-                <span class="phone-side phone-side-volume" aria-hidden="true"></span>
-                <span class="phone-side phone-side-volume-lower" aria-hidden="true"></span>
-                <span class="phone-side phone-side-power" aria-hidden="true"></span>
-                <div class="phone-screen">
-                <div class="phone-top">
-                  <span>{{ activeProductMoment.clock }}</span>
-                  <span>Night mode</span>
-                </div>
-                <Transition name="phone-state" mode="out-in">
-                  <div :key="activeProductMoment.key" class="story-phone-content">
-                    <div class="phone-main story-phone-main">
-                      <p class="phone-kicker">{{ activeProductMoment.eyebrow }}</p>
-                      <h2>{{ activeProductMoment.phoneTitle }}</h2>
-                      <div class="timer">{{ activeProductMoment.timer }}</div>
-                      <p class="story-phone-status">{{ activeProductMoment.status }}</p>
-                      <div class="quick-actions" aria-label="Quick logging actions">
-                        <span v-for="action in activeProductMoment.actions" :key="action">
-                          {{ action }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="phone-note">
-                      <span>{{ activeProductMoment.noteLabel }}</span>
-                      <strong>{{ activeProductMoment.noteValue }}</strong>
-                    </div>
-                    <div class="story-phone-details">
-                      <div v-for="detail in activeProductMoment.details" :key="detail.label">
-                        <span>{{ detail.label }}</span>
-                        <strong>{{ detail.value }}</strong>
-                      </div>
-                    </div>
-                    <div v-if="activeProductMoment.answer" class="story-phone-answer">
-                      <span>{{ activeProductMoment.answer.question }}</span>
-                      <p>{{ activeProductMoment.answer.response }}</p>
-                    </div>
-                  </div>
-                </Transition>
-                </div>
-              </div>
+              <LullabyPhoneMockup :state="phoneMockupState" />
             </div>
           </div>
 
