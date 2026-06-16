@@ -529,9 +529,6 @@ onBeforeUnmount(() => {
 
               <div class="hero-device" aria-label="Lullaby phone preview">
                 <div class="phone phone-hero">
-                  <span class="phone-side phone-side-volume" aria-hidden="true"></span>
-                  <span class="phone-side phone-side-volume-lower" aria-hidden="true"></span>
-                  <span class="phone-side phone-side-power" aria-hidden="true"></span>
                   <div class="phone-screen">
                     <div class="hero-phone-splash">
                       <img
@@ -543,6 +540,13 @@ onBeforeUnmount(() => {
                       />
                     </div>
                   </div>
+                  <img
+                    class="phone-frame"
+                    src="/images/iphone-15-mockup.png"
+                    alt=""
+                    aria-hidden="true"
+                    draggable="false"
+                  />
                 </div>
               </div>
             </div>

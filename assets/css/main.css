@@ -712,6 +712,45 @@ summary:focus-visible {
   color: var(--milk);
 }
 
+/* ===== iPhone 15 mockup PNG frame — hero phone =====
+   Replaces the CSS-drawn metal shell with the asset. The compound
+   `.phone.phone-hero` selector outranks both the base `.phone` rules and the
+   mobile media-query overrides, so the frame proportions hold at every width. */
+.phone.phone-hero {
+  width: min(336px, 78vw);
+  aspect-ratio: 1419 / 2796;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.phone-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* screen window fitted to the PNG cutout: top/bottom 4.3%, sides 8.5% */
+.phone.phone-hero .phone-screen {
+  position: absolute;
+  inset: 4.3% 8.5%;
+  z-index: 0;
+  border-radius: 7% / 3.5%;
+}
+
+/* the PNG carries the real Dynamic Island, so drop the CSS-drawn one */
+.phone.phone-hero .phone-screen::before {
+  display: none;
+}
+
 /* Hero phone shows a calm branded splash / launch screen.
    Scoped to the hero phone only — the Night Log story phone keeps its
    product-demo states untouched. */

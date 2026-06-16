@@ -144,7 +144,7 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
     :data-state="displayedKey"
     aria-hidden="true"
   >
-    <div class="lb-notch"></div>
+    <div class="lb-viewport">
     <div class="lb-statusbar">
       <span>3:48</span>
       <span class="lb-sb-right">
@@ -285,6 +285,14 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
         </div>
       </div>
     </div>
+    </div>
+    <img
+      class="lb-frame"
+      src="/images/iphone-15-mockup.png"
+      alt=""
+      aria-hidden="true"
+      draggable="false"
+    />
   </div>
 </template>
 
@@ -320,21 +328,43 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
   --lb-mom: #ff9e5e;
   --lb-dad: #5560c6;
 
-  /* Fixed height covers the tallest state so the frame never resizes when
-     scroll changes the state. */
+  /* The device is now the iPhone 15 mockup PNG. aspect-ratio locks the frame's
+     proportions; the live screen lives in .lb-viewport, fitted to the PNG's
+     transparent screen cutout, and the PNG overlays it via .lb-frame. */
   width: min(380px, 100%);
-  height: 748px;
-  background: var(--lb-bg);
-  border-radius: 48px;
-  box-shadow: var(--lb-shadow-soft), 0 0 0 9px #1d1726, 0 0 0 11px #2c2436;
-  overflow: hidden;
+  aspect-ratio: 1419 / 2796;
   position: relative;
-  display: flex;
-  flex-direction: column;
   flex-shrink: 0;
   font-family: 'Nunito', system-ui, sans-serif;
   color: var(--lb-ink);
   -webkit-tap-highlight-color: transparent;
+}
+
+/* the iPhone 15 bezel, overlaid above the screen content */
+.lb-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* live screen window — matched to the PNG cutout: top/bottom 4.3%, sides 8.5% */
+.lb-viewport {
+  position: absolute;
+  top: 4.3%;
+  right: 8.5%;
+  bottom: 4.3%;
+  left: 8.5%;
+  z-index: 1;
+  background: var(--lb-bg);
+  border-radius: 7% / 3.5%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .lb-phone :deep(*) {
   box-sizing: border-box;
@@ -360,19 +390,8 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
   --lb-accent-tint: var(--lb-sleep-tint);
 }
 
-.lb-notch {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 112px;
-  height: 26px;
-  background: #1d1726;
-  border-radius: 0 0 16px 16px;
-  z-index: 60;
-}
 .lb-statusbar {
-  height: 46px;
+  height: 38px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -389,18 +408,20 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
 
 /* single, non-scrolling screen */
 .lb-screen {
-  padding: 2px 18px 20px;
+  padding: 2px 18px 12px;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 9px;
   overflow: hidden;
+  flex: 1;
+  min-height: 0;
 }
 
 /* the part that swaps on scroll; fades softly */
 .lb-dyn {
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 9px;
   transition: opacity 0.32s ease, transform 0.32s ease;
 }
 .lb-phone.is-swapping .lb-dyn {
@@ -459,7 +480,7 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
   position: relative;
   border-radius: var(--lb-r-lg);
   overflow: hidden;
-  padding: 18px 18px 20px;
+  padding: 10px 18px 10px;
   background: linear-gradient(168deg, #ffe0b8 0%, #ffc9b0 42%, #f3d3ec 80%, #fbeff6 100%);
   box-shadow: var(--lb-shadow-card);
   transition: background 0.7s ease;
@@ -534,7 +555,7 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 .lb-sun {
   position: absolute;
@@ -660,7 +681,7 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
 }
 
 .lb-action {
-  margin-top: 14px;
+  margin-top: 9px;
   border: none;
   cursor: pointer;
   font-family: 'Nunito';
@@ -706,7 +727,7 @@ const careColor = (by) => CARE[by] || '#A8A2B8'
   align-items: center;
   gap: 12px;
   border-radius: var(--lb-r-md);
-  padding: 13px 15px;
+  padding: 7px 14px;
   background: linear-gradient(120deg, var(--lb-feed-tint), var(--lb-diaper-tint));
   box-shadow: var(--lb-shadow-card);
 }
