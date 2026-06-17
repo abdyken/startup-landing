@@ -251,7 +251,10 @@ const faqs = [
 ]
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
-const interpolate = (start, end, progress) => start + (end - start) * progress
+// Easing matched to the Homie reference (.reference/homie-template):
+// scale + height ease with easeOutQuad, the corner radius with easeOutCubic.
+const easeOutQuad = (t) => t * (2 - t)
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3)
 let cleanupHeroScroll = () => {}
 let cleanupSectionReveal = () => {}
 let cleanupProductStory = () => {}
@@ -293,14 +296,20 @@ onMounted(() => {
       return
     }
 
-    const viewportHeight = window.innerHeight || 1
-    const scrollRange = Math.max(hero.offsetHeight - viewportHeight, viewportHeight * 0.75)
-    const progress = clamp(-hero.getBoundingClientRect().top / scrollRange, 0, 1)
-    const isMobile = mobileQuery.matches
+    // Mobile keeps a static hero: the shrink layout is desktop-only (the CSS at
+    // max-width:640px drops the sticky/transform), so don't drive the vars there.
+    if (mobileQuery.matches) {
+      setStaticHero()
+      return
+    }
 
-    const scale = interpolate(1, isMobile ? 0.94 : 0.85, progress)
-    const radius = interpolate(0, isMobile ? 28 : 48, progress)
-    const height = interpolate(100, isMobile ? 82 : 62.5, progress)
+    // Match the reference: the shrink plays over the first 400px of page scroll,
+    // eased, then holds. scrollY ≈ -hero.top since the hero starts at page top.
+    const progress = clamp(window.scrollY / 400, 0, 1)
+
+    const scale = 1 - easeOutQuad(progress) * 0.15
+    const radius = easeOutCubic(progress) * 48
+    const height = 100 - easeOutQuad(progress) * 37.5
 
     root.style.setProperty('--hero-scale', scale.toFixed(3))
     root.style.setProperty('--hero-radius', `${radius.toFixed(1)}px`)
@@ -555,9 +564,12 @@ onBeforeUnmount(() => {
       </section>
 
       <section id="flow" class="flow section motion-ready">
-        <span class="section-word" aria-hidden="true">FLOW</span>
+        <span class="section-word reveal-item" aria-hidden="true">FLOW</span>
         <div class="container">
-          <div class="section-heading narrow">
+          <div
+            class="section-heading narrow reveal-item"
+            :style="{ '--reveal-delay': '120ms' }"
+          >
             <p class="eyebrow">3AM flow</p>
             <h2>A small night record for the wakeups you barely remember.</h2>
           </div>
