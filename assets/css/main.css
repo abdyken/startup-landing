@@ -993,117 +993,197 @@ summary:focus-visible {
 }
 
 .flow-grid {
+  --flow-gap: clamp(28px, 4vw, 60px);
+  --flow-node: 15px;
+  --flow-node-x: 7.5px;   /* node centre, from the step's left edge */
+  --flow-line-y: 7.5px;   /* node centre, from the step's top edge */
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-top: 56px;
+  gap: var(--flow-gap);
+  margin-top: clamp(58px, 7vw, 88px);
 }
 
-/* Timeline connector: two soft bridges that sit ONLY in the gaps between the
-   staggered cards, behind the card surfaces (cards are z-index:1 and opaque, so
-   they cover everything except the column gaps). Each bridge sits at the
-   midpoint height of the two markers it links, so it descends with the
-   staircase instead of cutting a single flat line across the cards.
-   ::before bridges card 1 → card 2, ::after bridges card 2 → card 3. */
-.flow-grid::before,
-.flow-grid::after {
+/* Open page ledger: no container, no tray. A single faint hairline ruling seats
+   the timeline on the page at the node line, and the warm node-to-node thread is
+   drawn over it. The flow reads as a record written directly onto the page, not
+   a widget placed inside a panel. */
+.flow-grid::before {
   content: "";
   position: absolute;
-  width: 74px;
+  top: var(--flow-line-y);
+  left: 0;
+  right: 0;
+  z-index: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(62, 92, 118, 0.12) 13%,
+    rgba(62, 92, 118, 0.12) 87%,
+    transparent 100%
+  );
+  transform: translateY(-50%);
+}
+
+/* The trace. Not three cards on a page — one continuous record of a single
+   night. Each station (bar the last) draws the thread segment that reaches the
+   NEXT node, so the line survives any column width and flips from a horizontal
+   run (desktop) to a vertical bedside rail (mobile) with the same mechanism.
+   Its colour warms hop by hop (set per step below) — dim at the wake, peach by
+   the handoff — so time reads as passing and the night as resolving toward
+   something ready. */
+.flow-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: var(--flow-line-y);
+  left: var(--flow-node-x);
+  width: calc(100% + var(--flow-gap));
   height: 2px;
   border-radius: 2px;
-  background:
-    linear-gradient(90deg, rgba(232, 154, 119, 0) 0%, rgba(232, 154, 119, 0.42) 26%, rgba(232, 154, 119, 0.42) 74%, rgba(232, 154, 119, 0) 100%);
-  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--seg-from, var(--line-strong)), var(--seg-to, var(--line-strong)));
+  transform: translateY(-50%);
+  transform-origin: left center;
 }
 
-.flow-grid::before {
-  top: 60px;
-  left: calc((100% - 36px) / 3 + 9px);
+/* Each segment draws itself once its station reveals — the trace unfolding in
+   sequence rather than three boxes fading in unison. The default (no JS, or
+   before reveal-ready) is the finished line, so the section never ships blank;
+   the draw only applies while the reveal system is live, and reduced motion
+   lands it instantly (see the reduced-motion block). */
+.reveal-ready .flow-step:not(:last-child)::after {
+  transform: translateY(-50%) scaleX(0);
+  transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
 }
 
-.flow-grid::after {
-  top: 94px;
-  left: calc((100% - 36px) / 3 * 2 + 27px);
+.reveal-ready .flow-step.is-revealed:not(:last-child)::after {
+  transform: translateY(-50%) scaleX(1);
 }
 
 .flow-step {
   position: relative;
   z-index: 1;
-  min-height: 300px;
   display: grid;
-  gap: 22px;
   align-content: start;
-  padding: clamp(24px, 3vw, 34px);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(180deg, rgba(255, 253, 248, 0.99), rgba(245, 237, 229, 0.55)),
-    var(--surface);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 20px 50px rgba(62, 92, 118, 0.1);
-  transition:
-    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 280ms ease;
+  gap: clamp(15px, 1.6vw, 22px);
+  padding-top: 36px;   /* room for the node + thread sitting above the timestamp */
 }
 
-.flow-step:hover {
-  transform: translateY(-4px);
-  border-color: rgba(62, 92, 118, 0.42);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.82),
-    0 26px 60px rgba(62, 92, 118, 0.14);
+/* Node on the thread — the progression IS the story: cool hollow ring (just
+   woke, nothing logged) → warm cored dot (mid-log) → solid, lit, haloed (saved
+   and ready to hand off). The thick bg ring punches a clean hole through the
+   thread so the line reads as passing behind the node. */
+.flow-marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--flow-node);
+  height: var(--flow-node);
+  border: 2px solid rgba(62, 92, 118, 0.4);
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 0 0 4px var(--bg);
+  transition:
+    border-color 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.flow-step:nth-child(1) {
+  --seg-from: rgba(62, 92, 118, 0.24);
+  --seg-to: rgba(232, 154, 119, 0.32);
 }
 
 .flow-step:nth-child(2) {
-  margin-top: 34px;
+  --seg-from: rgba(232, 154, 119, 0.36);
+  --seg-to: rgba(232, 154, 119, 0.52);
 }
 
-.flow-step:nth-child(3) {
-  margin-top: 68px;
+.flow-step:nth-child(2) .flow-marker {
+  border-color: rgba(232, 154, 119, 0.72);
+  background: radial-gradient(circle, var(--peach) 0 36%, var(--bg) 42%);
 }
 
-.flow-marker {
-  position: absolute;
-  top: 36px;
-  left: 30px;
-  width: 15px;
-  height: 15px;
-  border: 4px solid var(--surface);
-  border-radius: 50%;
+.flow-step:nth-child(3) .flow-marker {
+  border-color: var(--peach-deep);
   background: var(--peach);
-  box-shadow: 0 0 0 1px rgba(232, 154, 119, 0.34);
+  box-shadow:
+    0 0 0 4px var(--bg),
+    0 0 0 6px rgba(232, 154, 119, 0.24);
+}
+
+.flow-step:hover .flow-marker {
+  border-color: var(--peach-deep);
+  box-shadow:
+    0 0 0 4px var(--bg),
+    0 0 0 7px rgba(232, 154, 119, 0.2);
+}
+
+/* Past moment (the wake): a receding memory. Body and fragments sit back a
+   little while the timestamp stays a firm anchor. */
+.flow-step:nth-child(1) .flow-step-body,
+.flow-step:nth-child(1) .flow-fragments {
+  opacity: 0.84;
+}
+
+/* Active moment (logging now): the timestamp leans in as the strongest anchor,
+   and the node breathes so the capture reads as live and in progress. */
+.flow-step:nth-child(2) .flow-time {
+  font-size: clamp(1.6rem, 2.6vw, 2.05rem);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .flow-step:nth-child(2) .flow-marker {
+    animation: flow-active-pulse 2.8s ease-out infinite;
+  }
+}
+
+@keyframes flow-active-pulse {
+  0% {
+    box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px rgba(232, 154, 119, 0.42);
+  }
+  70% {
+    box-shadow: 0 0 0 4px var(--bg), 0 0 0 15px rgba(232, 154, 119, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px rgba(232, 154, 119, 0);
+  }
+}
+
+/* Resolved moment (handoff ready): the fragments read as saved, warmed and
+   sealed, waiting for the partner. */
+.flow-step:nth-child(3) .flow-fragments li {
+  border-color: rgba(232, 154, 119, 0.3);
+  background: rgba(242, 183, 154, 0.12);
 }
 
 .flow-step-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  padding-left: 28px;
 }
 
 .flow-time {
-  display: inline-flex;
   color: var(--steel);
   font-family:
     "SFMono-Regular", Consolas, "Liberation Mono", ui-monospace, monospace;
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .flow-index {
   color: rgba(62, 92, 118, 0.34);
   font-family:
     "SFMono-Regular", Consolas, "Liberation Mono", ui-monospace, monospace;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 800;
+  letter-spacing: 0.06em;
 }
 
 .flow-step-body {
@@ -1112,7 +1192,8 @@ summary:focus-visible {
 }
 
 .flow-step-body p {
-  max-width: 28ch;
+  max-width: 32ch;
+  text-wrap: pretty;
 }
 
 .flow .section-heading h2,
@@ -1131,7 +1212,8 @@ summary:focus-visible {
 .flow-fragments {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+  margin-top: 2px;
   padding: 0;
   list-style: none;
 }
@@ -1145,23 +1227,25 @@ summary:focus-visible {
 .flow-fragments li {
   display: inline-flex;
   align-items: center;
-  min-height: 38px;
-  padding: 0 14px;
+  min-height: 32px;
+  padding: 0 11px;
   border: 1px solid rgba(62, 92, 118, 0.14);
-  border-radius: 999px;
-  background: rgba(255, 253, 248, 0.86);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.58);
   color: var(--ink);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
+/* tiny square tick rather than a dot — reads as a logged mark in a record */
 .flow-fragments li::before {
   content: "";
   flex: 0 0 auto;
   width: 5px;
   height: 5px;
-  margin-right: 8px;
-  border-radius: 50%;
+  margin-right: 7px;
+  border-radius: 1.5px;
   background: var(--peach);
 }
 
@@ -1709,23 +1793,43 @@ summary:focus-visible {
   pointer-events: none;
 }
 
+/* A compact closing invitation band, not a hero and not two islands. The whole
+   message reads straight down one centreline (eyebrow, headline, paragraph,
+   form, reassurance), bracketed by two faint full-width hairlines so it feels
+   like a deliberate closing note rather than a sparse split section. */
+.final-cta.section {
+  padding-block: clamp(44px, 5vw, 76px) clamp(16px, 2vw, 26px);
+  /* pull the FAQ up into the generous empty padding below the band so the next
+     section feels naturally next rather than stranded far below */
+  margin-bottom: clamp(-64px, -5vw, -36px);
+}
+
 .final-inner {
+  position: relative;
   display: grid;
   justify-items: center;
-  gap: 34px;
-  max-width: 980px;
-  padding: clamp(40px, 7vw, 78px);
-  border: 1px solid rgba(62, 92, 118, 0.3);
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(242, 183, 154, 0.28), transparent 42%),
-    radial-gradient(circle at 80% 20%, rgba(203, 207, 236, 0.26), transparent 34%),
-    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(230, 241, 248, 0.34)),
-    var(--surface);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.58),
-    0 28px 76px rgba(62, 92, 118, 0.2);
+  gap: clamp(18px, 2.4vw, 28px);
+  padding-block: clamp(30px, 3.4vw, 44px) clamp(22px, 2.4vw, 30px);
   text-align: center;
+}
+
+/* the two hairlines that frame the band, full content width, fading at the ends */
+.final-inner::before,
+.final-inner::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 12%, var(--line) 88%, transparent);
+}
+
+.final-inner::before {
+  top: 0;
+}
+
+.final-inner::after {
+  bottom: 0;
 }
 
 .final-inner .section-heading h2 {
@@ -1734,72 +1838,108 @@ summary:focus-visible {
     sans-serif;
   font-weight: 760;
   letter-spacing: 0;
-  line-height: 1;
+  line-height: 1.03;
+  /* below the hero h1 scale, but with enough weight to close the page; the
+     measure keeps it to two lines (same family, same text) */
+  font-size: clamp(2.2rem, 4.6vw, 3.8rem);
 }
 
-.not-list {
+/* centred message held to a calm measure */
+.final-cta .section-heading.narrow {
+  max-width: 44rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* the action sits directly in the centred flow, immediately under the message */
+.final-action {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
+  justify-items: center;
+  gap: clamp(16px, 2vw, 22px);
   width: 100%;
+}
+
+/* Quiet trust notes as one tight centred footer row for the band, each marked
+   with the same logged tick used in the 3AM flow. Reassurance, not nav. */
+.not-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 16px;
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
 }
 
 .not-list li {
-  min-height: 128px;
-  display: grid;
-  align-content: center;
-  padding: 22px;
-  border-right: 1px solid var(--line);
-  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  padding: 0;
+  color: var(--cream-soft);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  font-size: clamp(1rem, 1.5vw, 1.15rem);
-  font-weight: 720;
-  line-height: 1.2;
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.3;
   text-align: left;
 }
 
-.not-list li:last-child {
-  border-right: 0;
-  color: var(--steel);
+.not-list li::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 1.5px;
+  background: var(--peach);
 }
 
 .waitlist-form {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
-  width: min(100%, 620px);
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
 }
 
 .waitlist-input {
   width: 100%;
-  min-height: 54px;
-  padding: 0 18px;
-  border: 1px solid rgba(62, 92, 118, 0.22);
+  min-height: 56px;
+  padding: 0 20px;
+  border: 1px solid rgba(62, 92, 118, 0.28);
   border-radius: 999px;
-  background: rgba(255, 253, 248, 0.92);
+  background: var(--surface);
   color: var(--ink);
   font: inherit;
   font-size: 1rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 2px rgba(62, 92, 118, 0.07);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .waitlist-input::placeholder {
   color: var(--muted);
 }
 
+.waitlist-input:hover {
+  border-color: rgba(62, 92, 118, 0.42);
+}
+
 .waitlist-input:focus-visible {
   outline: 2px solid var(--blue-soft);
   outline-offset: 3px;
+  border-color: var(--steel);
 }
 
 .waitlist-submit {
-  min-width: 214px;
+  min-width: 0;
 }
 
 .waitlist-status {
@@ -2140,32 +2280,72 @@ summary:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .flow-grid,
-  .not-list {
+  /* the two-column invitation collapses to a single column: heading, then the
+     action block (form, then reassurance) */
+  .final-inner {
     grid-template-columns: 1fr;
   }
 
-  /* single-column: one clean vertical rail; the second desktop bridge is off */
+  .final-action {
+    padding-top: 0;
+    max-width: 32rem;
+  }
+
+  /* Mobile: the trace stands up into a vertical bedside rail — a clean night
+     log to scan in the dark. Same per-step connector, rotated: each station
+     draws the rail segment down to the next node, and --flow-gap is rebound so
+     the rail height stays glued to the actual row gap. */
+  .flow-grid {
+    grid-template-columns: 1fr;
+    --flow-gap: clamp(30px, 6vw, 44px);
+    gap: var(--flow-gap);
+  }
+
+  /* the ledger ruling stands up into a faint vertical margin line behind the
+     rail, giving the vertical log structure without becoming a card */
   .flow-grid::before {
     top: 0;
     bottom: 0;
-    left: 37px;
+    left: var(--flow-node-x);
     right: auto;
-    width: 2px;
+    width: 1px;
     height: auto;
-    border-radius: 0;
-    transform: none;
-    background:
-      linear-gradient(180deg, rgba(232, 154, 119, 0) 0%, rgba(232, 154, 119, 0.4) 12%, rgba(232, 154, 119, 0.4) 88%, rgba(232, 154, 119, 0) 100%);
+    transform: translateX(-50%);
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(62, 92, 118, 0.1) 7%,
+      rgba(62, 92, 118, 0.1) 93%,
+      transparent 100%
+    );
   }
 
-  .flow-grid::after {
-    display: none;
+  .flow-step {
+    padding-top: 0;
+    padding-left: 38px;
   }
 
-  .flow-step:nth-child(2),
-  .flow-step:nth-child(3) {
-    margin-top: 0;
+  .flow-marker {
+    top: 5px;
+    left: 0;
+  }
+
+  .flow-step:not(:last-child)::after {
+    top: 12px;
+    left: var(--flow-node-x);
+    width: 2px;
+    height: calc(100% + var(--flow-gap));
+    background: linear-gradient(180deg, var(--seg-from, var(--line-strong)), var(--seg-to, var(--line-strong)));
+    transform: translateX(-50%);
+    transform-origin: top center;
+  }
+
+  .reveal-ready .flow-step:not(:last-child)::after {
+    transform: translateX(-50%) scaleY(0);
+  }
+
+  .reveal-ready .flow-step.is-revealed:not(:last-child)::after {
+    transform: translateX(-50%) scaleY(1);
   }
 
   .product-story {
@@ -2203,21 +2383,6 @@ summary:focus-visible {
 
   .not-list li {
     min-height: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .not-list li:last-child {
-    border-bottom: 0;
-  }
-
-  .waitlist-form {
-    grid-template-columns: 1fr;
-  }
-
-  .waitlist-submit {
-    width: 100%;
-    min-width: 0;
   }
 }
 
@@ -2379,27 +2544,36 @@ summary:focus-visible {
     display: none;
   }
 
-  .flow-grid::before {
-    left: 31px;
-  }
-
   .flow-step {
-    min-height: auto;
-    gap: 18px;
-    padding: 22px 22px 22px 52px;
+    gap: 14px;
+    padding-left: 34px;
   }
 
   .flow-marker {
-    top: 29px;
-    left: 24px;
+    top: 4px;
   }
 
-  .flow-step-head {
-    padding-left: 0;
+  .flow-step:not(:last-child)::after {
+    top: 11px;
   }
 
   .flow-step-body p {
     max-width: none;
+  }
+
+  /* small mobile: stack the form so the field stays comfortably tappable, and
+     let the reassurance notes wrap as a tight centred cluster */
+  .waitlist-form {
+    grid-template-columns: 1fr;
+    max-width: 22rem;
+  }
+
+  .waitlist-submit {
+    width: 100%;
+  }
+
+  .not-list {
+    gap: 8px 14px;
   }
 
   .story-moment {
@@ -2538,7 +2712,9 @@ summary:focus-visible {
   .phone-state-leave-active,
   .story-moment,
   .story-moment::before,
-  .flow-step {
+  .flow-step,
+  .flow-step::after,
+  .flow-marker {
     transition: none;
   }
 

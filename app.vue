@@ -579,7 +579,7 @@ onBeforeUnmount(() => {
               v-for="(step, index) in flowSteps"
               :key="step.title"
               class="flow-step reveal-item"
-              :style="{ '--reveal-delay': `${index * 80}ms` }"
+              :style="{ '--reveal-delay': `${index * 130}ms` }"
             >
               <span class="flow-marker" aria-hidden="true"></span>
               <div class="flow-step-head">
@@ -671,46 +671,48 @@ onBeforeUnmount(() => {
             </p>
           </div>
 
-          <ul class="not-list" aria-label="What Lullaby keeps out">
-            <li v-for="item in notAnother" :key="item">{{ item }}</li>
-          </ul>
-
-          <form
-            class="waitlist-form"
-            @submit.prevent="handleWaitlistSubmit"
-            aria-label="Join the Lullaby waitlist"
-          >
-            <label class="sr-only" for="waitlist-email">Email address</label>
-            <input
-              id="waitlist-email"
-              v-model="waitlistEmail"
-              class="waitlist-input"
-              type="email"
-              name="email"
-              placeholder="your@email.com"
-              autocomplete="email"
-              inputmode="email"
-              :disabled="waitlistLoading"
-              required
-            />
-            <button
-              class="primary-button waitlist-submit"
-              type="submit"
-              :disabled="waitlistLoading"
+          <div class="final-action">
+            <form
+              class="waitlist-form"
+              @submit.prevent="handleWaitlistSubmit"
+              aria-label="Join the Lullaby waitlist"
             >
-              {{ waitlistLoading ? 'Joining…' : 'Join the waitlist' }}
-            </button>
-          </form>
+              <label class="sr-only" for="waitlist-email">Email address</label>
+              <input
+                id="waitlist-email"
+                v-model="waitlistEmail"
+                class="waitlist-input"
+                type="email"
+                name="email"
+                placeholder="your@email.com"
+                autocomplete="email"
+                inputmode="email"
+                :disabled="waitlistLoading"
+                required
+              />
+              <button
+                class="primary-button waitlist-submit"
+                type="submit"
+                :disabled="waitlistLoading"
+              >
+                {{ waitlistLoading ? 'Joining…' : 'Join the waitlist' }}
+              </button>
+            </form>
 
-          <p
-            v-if="waitlistMessage"
-            class="waitlist-status"
-            :class="`is-${waitlistStatus}`"
-            role="status"
-            aria-live="polite"
-          >
-            {{ waitlistMessage }}
-          </p>
+            <p
+              v-if="waitlistMessage"
+              class="waitlist-status"
+              :class="`is-${waitlistStatus}`"
+              role="status"
+              aria-live="polite"
+            >
+              {{ waitlistMessage }}
+            </p>
+
+            <ul class="not-list" aria-label="What Lullaby keeps out">
+              <li v-for="item in notAnother" :key="item">{{ item }}</li>
+            </ul>
+          </div>
         </div>
       </section>
 
