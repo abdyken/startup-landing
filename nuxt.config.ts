@@ -1,6 +1,18 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-06-11',
   css: ['~/assets/css/main.css'],
+  // The dev machine's inotify watcher limit (fs.inotify.max_user_watches) is
+  // exhausted, so native file watching throws ENOSPC on startup. Poll instead
+  // of relying on kernel watchers. To revert: raise the kernel limit with
+  // `sudo sysctl fs.inotify.max_user_watches=524288` and delete this block.
+  vite: {
+    server: {
+      watch: { usePolling: true, interval: 300 },
+    },
+  },
+  watchers: {
+    chokidar: { usePolling: true, interval: 300 },
+  },
   // Public Supabase credentials. Nuxt maps NUXT_PUBLIC_SUPABASE_URL ->
   // public.supabaseUrl and NUXT_PUBLIC_SUPABASE_ANON_KEY -> public.supabaseAnonKey
   // at runtime. The anon key is public by design; RLS guards the table.
