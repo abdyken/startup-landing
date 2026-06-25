@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-06-11',
+  modules: ['@vercel/analytics'],
   css: ['~/assets/css/main.css'],
   // The dev machine's inotify watcher limit (fs.inotify.max_user_watches) is
   // exhausted, so native file watching throws ENOSPC on startup. Poll instead
