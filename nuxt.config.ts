@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: '',
       supabaseAnonKey: '',
+      supportEmail: 'support@lullaby.app',
     },
   },
   app: {
