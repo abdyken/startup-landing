@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 const config = useRuntimeConfig()
 const supportEmail = computed(
-  () => config.public.supportEmail || 'support@lullaby.app',
+  () => config.public.supportEmail || '240103091@sdu.edu.kz',
 )
 
 useHead({

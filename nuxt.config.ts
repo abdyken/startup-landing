@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: '',
       supabaseAnonKey: '',
-      supportEmail: 'support@lullaby.app',
+      supportEmail: '240103091@sdu.edu.kz',
     },
   },
   app: {
