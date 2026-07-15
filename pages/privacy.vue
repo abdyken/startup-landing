@@ -48,7 +48,10 @@ const sections = computed(() => [
     heading: 'Reassure and AI',
     paragraphs: [
       'Reassure provides general supportive information for common baby-care questions. It is not medical advice, diagnosis, or a replacement for a pediatrician.',
-      'Reassure includes an optional feature that uses a third-party AI provider, Anthropic (Claude), to phrase a short, personalized night summary. This feature runs only after you explicitly turn it on with an in-app consent prompt. When enabled, we send Anthropic a minimized, aggregated summary of your baby\'s logs — counts such as feeds, diaper changes, spit-ups, and longest sleep, plus a coarse age band. We do not send your baby\'s name, date of birth, your notes, the exact text you type or say, or your pediatrician\'s number. Anthropic processes this data to generate the summary and does not use data submitted through its API to train its models. If you do not enable this feature, no data is sent to any AI provider.',
+      'Reassure includes two optional features that use a third-party AI provider, Anthropic (Claude). Each is off by default and runs only after you explicitly turn it on with a separate in-app consent prompt. If you do not enable them, no data is sent to any AI provider, and Reassure works fully without them.',
+      '1. AI-phrased night summary. When enabled, we send Anthropic a minimized, aggregated summary of your baby\'s logs — counts such as feeds, diaper changes, spit-ups, and longest sleep, plus a coarse age band. We do not send your baby\'s name, date of birth, your notes, or your pediatrician\'s number.',
+      '2. AI companion. When enabled, the words you type or say in the Reassure free-text field are sent to Anthropic so it can write a warm, supportive reply about how you are feeling and coping. This is for emotional support only. Before anything is sent, the app checks your message on our server: messages that indicate a crisis, an infant emergency, or a medical question about your baby are never sent to the AI — they are answered locally with guidance to contact a crisis line, emergency services, or your pediatrician. We ask you not to include your baby\'s name or health details in this field.',
+      'Anthropic processes this data only to generate the response and does not use data submitted through its API to train its models. Anthropic provides protections for this data that are the same as or equal to those described in this policy.',
     ],
   },
   {
@@ -65,7 +68,7 @@ const sections = computed(() => [
     eyebrow="Privacy"
     title="Privacy Policy"
     intro="A plain-language note on what Lullaby keeps local, what it does not do, and how to reach us."
-    updated="July 14, 2026"
+    updated="July 15, 2026"
     :sections="sections"
   />
 </template>
