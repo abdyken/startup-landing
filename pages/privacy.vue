@@ -41,7 +41,7 @@ const sections = computed(() => [
   {
     heading: 'Voice Input',
     paragraphs: [
-      'Microphone or speech recognition is used only when you choose voice input. Voice input is optional, and it is used to help turn your spoken note into a log or message.',
+      'Microphone or speech recognition is used only when you choose voice input. Voice input is optional, and it is used to help turn your spoken words into a log or message. When you use voice input, the audio is transcribed by your device\'s built-in speech recognition service (provided by Apple on iOS), which operates under that provider\'s own privacy terms. Lullaby does not upload or store your audio.',
     ],
   },
   {
@@ -50,7 +50,7 @@ const sections = computed(() => [
       'Reassure provides general supportive information for common baby-care questions. It is not medical advice, diagnosis, or a replacement for a pediatrician.',
       'Reassure includes two optional features that use a third-party AI provider, Anthropic (Claude). Each is off by default and runs only after you explicitly turn it on with a separate in-app consent prompt. If you do not enable them, no data is sent to any AI provider, and Reassure works fully without them.',
       '1. AI-phrased night summary. When enabled, we send Anthropic a minimized, aggregated summary of your baby\'s logs — counts such as feeds, diaper changes, spit-ups, and longest sleep, plus a coarse age band. We do not send your baby\'s name, date of birth, your notes, or your pediatrician\'s number.',
-      '2. AI companion. When enabled, the words you type or say in the Reassure free-text field are sent to Anthropic so it can write a warm, supportive reply about how you are feeling and coping. This is for emotional support only. Before anything is sent, the app checks your message on our server: messages that indicate a crisis, an infant emergency, or a medical question about your baby are never sent to the AI — they are answered locally with guidance to contact a crisis line, emergency services, or your pediatrician. We ask you not to include your baby\'s name or health details in this field.',
+      '2. AI companion. When enabled, the words you type or say in the Reassure free-text field are sent to Anthropic so it can write a warm, supportive reply about how you are feeling and coping. This is for emotional support only. Before anything is sent, the app checks your message on our server: messages that indicate a crisis, an infant emergency, or a medical question about your baby are never sent to the AI — they are answered locally with guidance to contact a crisis line, emergency services, or your pediatrician. We ask you not to include your baby\'s name or health details in this field. For safety and quality, we keep a short record of AI companion requests in our own secure backend: a preview of your message (up to 80 characters), its length, and the AI\'s reply. These records are access-restricted and retained for a limited period, after which they are deleted. Your full message is not stored on your device or in your account data.',
       'Anthropic processes this data only to generate the response and does not use data submitted through its API to train its models. Anthropic provides protections for this data that are the same as or equal to those described in this policy.',
     ],
   },
@@ -68,7 +68,7 @@ const sections = computed(() => [
     eyebrow="Privacy"
     title="Privacy Policy"
     intro="A plain-language note on what Lullaby keeps local, what it does not do, and how to reach us."
-    updated="July 15, 2026"
+    updated="July 18, 2026"
     :sections="sections"
   />
 </template>
