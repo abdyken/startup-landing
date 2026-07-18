@@ -2288,11 +2288,6 @@ summary:focus-visible {
   min-height: 100vh;
 }
 
-.legal-nav {
-  position: sticky;
-  margin-top: 16px;
-}
-
 .legal-main {
   padding: clamp(76px, 9vw, 118px) 0 clamp(72px, 9vw, 120px);
 }
