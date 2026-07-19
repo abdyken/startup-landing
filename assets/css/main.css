@@ -382,33 +382,24 @@ summary:focus-visible {
   height: 100%;
   object-fit: cover;
   object-position: 50% 32%;
-  opacity: 0.94;
+  opacity: 1;
   pointer-events: none;
 }
 
-/* soft veil over the video: a light wash through the headline band, an open
-   mid so the video reads as live atmosphere, then a GRADUAL dissolve to the
-   page background near the bottom. The ramp is spread across many low stops
-   (no steep jump) so there is no bright fog band, and the tint runs cool-
-   neutral where it crosses the warm window-light in the video — only the last
-   few percent return to warm milk so the seam into the next section is
-   seamless. */
+/* localized top veil for copy readability; the lower video stays unobscured. */
 .hero-media::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(248, 248, 249, 0.42) 0%,
-    rgba(248, 248, 249, 0.24) 24%,
-    rgba(248, 248, 249, 0.06) 52%,
-    rgba(248, 248, 249, 0.12) 70%,
-    rgba(249, 248, 246, 0.26) 82%,
-    rgba(249, 247, 243, 0.46) 90%,
-    rgba(250, 246, 240, 0.72) 96%,
-    rgba(250, 246, 240, 1) 100%
-  );
+  background:
+    linear-gradient(
+      180deg,
+      rgba(248, 248, 249, 0.42) 0%,
+      rgba(248, 248, 249, 0.24) 24%,
+      rgba(248, 248, 249, 0.06) 52%,
+      transparent 70%
+    );
 }
 
 /* localized readability veil sitting directly behind the headline copy so the
@@ -433,19 +424,7 @@ summary:focus-visible {
 }
 
 .hero-shrink-stage::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 38%;
-  z-index: 1;
-  width: min(760px, 62%);
-  height: min(760px, 82svh);
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 28%, rgba(170, 201, 230, 0.3), transparent 24rem),
-    radial-gradient(circle at 50% 70%, rgba(203, 207, 236, 0.15), transparent 21rem),
-    radial-gradient(circle at 54% 92%, rgba(242, 183, 154, 0.035), transparent 17rem);
-  transform: translateX(-50%);
+  content: none;
 }
 
 /* Background word. Appearance is unchanged; it now carries the reference's
@@ -542,15 +521,7 @@ summary:focus-visible {
 }
 
 .hero-device::before {
-  content: "";
-  position: absolute;
-  width: min(760px, 140vw);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(170, 201, 230, 0.32), transparent 57%),
-    radial-gradient(circle at 50% 42%, rgba(242, 183, 154, 0.16), transparent 38%);
-  filter: blur(4px);
+  content: none;
 }
 
 /* ── Hero → Flow exit ─────────────────────────────────────────────────
