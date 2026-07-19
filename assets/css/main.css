@@ -26,9 +26,14 @@
   --radius-lg: 28px;
   --max: 1180px;
 
+  /* Hero scroll scene. These are the rest state; the controller in
+     pages/index.vue overrides them on the .hero element while scrolling, so
+     SSR / no-JS / reduced motion all render the un-scrolled hero. */
   --hero-scale: 1;
   --hero-radius: 0px;
   --hero-height: 100svh;
+  --hero-ghost-y: 0px;
+  --hero-ghost-opacity: 1;
 }
 
 *,
@@ -311,7 +316,7 @@ summary:focus-visible {
   isolation: isolate;
   /* Normal-flow hero, ~one screen tall (like the Homie reference). The whole
      section scrolls up with the page; only the background video layer shrinks
-     during the first 400px (see app.vue + .hero-media). Not sticky — no pin. */
+     during the first 400px (see pages/index.vue + .hero-media). No pin. */
   min-height: 100svh;
   padding-inline: 20px;
   overflow: clip;
@@ -319,7 +324,10 @@ summary:focus-visible {
   text-align: center;
 }
 
-.hero-sticky {
+/* Layout wrapper only. Named `-scene` (not `-sticky`) on purpose: the reference
+   hero has no pin at all — the whole section scrolls away at page speed and only
+   the absolutely-positioned media layer animates. Nothing here is ever sticky. */
+.hero-scene {
   position: relative;
   display: grid;
   min-height: 100svh;
@@ -362,7 +370,10 @@ summary:focus-visible {
   backface-visibility: hidden;
   transform: scale(var(--hero-scale));
   transform-origin: center;
-  will-change: transform, height, border-radius;
+  /* `transform` only, matching the reference's `will-change-transform`. Hinting
+     height/border-radius is useless (neither is compositable) and only adds
+     layer-promotion pressure. */
+  will-change: transform;
   pointer-events: none;
 }
 
@@ -437,6 +448,12 @@ summary:focus-visible {
   transform: translateX(-50%);
 }
 
+/* Background word. Appearance is unchanged; it now carries the reference's
+   second motion layer — the giant word sinks and dissolves while the video
+   collapses, which is most of what makes the hero read as "dissolving" rather
+   than just "shrinking". Reference: components/hero-section.tsx, the
+   `translateY(${scrollProgress * 150}px)` / `opacity: 1 - scrollProgress * 0.8`
+   container. Both use RAW (un-eased) progress there, unlike the media layer. */
 .hero-ghost {
   position: absolute;
   left: 50%;
@@ -448,7 +465,9 @@ summary:focus-visible {
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 0.8;
-  transform: translateX(-50%);
+  opacity: var(--hero-ghost-opacity, 1);
+  transform: translate(-50%, var(--hero-ghost-y, 0px));
+  will-change: transform, opacity;
   user-select: none;
   white-space: nowrap;
 }
@@ -534,35 +553,19 @@ summary:focus-visible {
   filter: blur(4px);
 }
 
-/* ── Hero → Flow exit polish ──────────────────────────────────────────
-   Only the hero phone is treated. The hero is normal-flow and scrolls away;
-   the phone is tall, so on its own it lingered over the Flow intro and dragged
-   a hard edge into the next section. As the phone leaves the top of the
-   viewport it fades and lifts, so the hero dissolves into the page instead of
-   being shoved off. The headline copy is left alone — it simply scrolls off the
-   top, which already reads naturally. CSS scroll-driven (no JS); inert where
-   unsupported and off under reduced motion, so the static fallback is just the
-   hero scrolling away as before. */
-@media (min-width: 641px) and (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    /* The phone runs on its own view() timeline, so it holds full opacity until
-       it starts leaving the top (the video shrink finishes first), then fades +
-       lifts away by the midpoint of its exit — gone well before the Flow
-       heading reaches the middle of the screen. */
-    .hero-device {
-      animation: hero-foreground-exit linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 50%;
-    }
+/* ── Hero → Flow exit ─────────────────────────────────────────────────
+   The phone deliberately has NO scroll-driven animation. In the reference
+   (components/hero-section.tsx) the phone sits in normal flow at z-10 and is
+   never touched after its mount entrance — it simply scrolls off with the
+   section, at page speed and at full opacity.
 
-    @keyframes hero-foreground-exit {
-      to {
-        opacity: 0;
-        transform: translateY(-44px);
-      }
-    }
-  }
-}
+   A `view()`-timeline fade + lift used to live here, to stop the tall phone
+   "dragging a hard edge into the next section". That is already handled at the
+   source: the stage's 36px bottom padding leaves the phone (bottom ≈1064px)
+   fully inside the hero (≈1100px), and both .hero and .hero-shrink-stage use
+   `overflow: clip`, so it can never bleed over #flow. The rule also only
+   existed in browsers supporting animation-timeline, so Chrome and Safari
+   disagreed about how the hero exits. */
 
 /* outer device shell: thin graphite/silver metal frame */
 .phone {
@@ -2561,15 +2564,16 @@ summary:focus-visible {
     font-size: 0.82rem;
   }
 
-  /* Mobile keeps a static hero (no sticky shrink — see app.vue), so the section
-     is just its content height: a 128svh min-height here only created an empty
-     dead-scroll gap below the hero. */
+  /* Mobile keeps a static hero (no shrink — see pages/index.vue HERO_MOBILE_QUERY),
+     so the section is just its content height. Deliberate deviation from the
+     reference, which has no breakpoint gate: the mobile composition below uses
+     the video as a full-bleed backdrop rather than a top-anchored shrinking slab. */
   .hero {
     min-height: auto;
     padding-inline: 14px;
   }
 
-  .hero-sticky {
+  .hero-scene {
     position: relative;
     min-height: auto;
     padding: 0;
@@ -2583,7 +2587,7 @@ summary:focus-visible {
     will-change: auto;
   }
 
-  /* Mobile keeps a static hero (no shrink — see app.vue): let the video layer
+  /* Mobile keeps a static hero (no shrink — see pages/index.vue): let the video layer
      fill the content box as a plain background instead of a top-anchored
      100svh slab, matching the prior mobile composition. */
   .hero-media {
@@ -2797,7 +2801,7 @@ summary:focus-visible {
     min-height: 100svh;
   }
 
-  .hero-sticky {
+  .hero-scene {
     position: relative;
   }
 
@@ -2810,6 +2814,16 @@ summary:focus-visible {
 
   .hero-media {
     display: none;
+  }
+
+  /* The controller never drives the vars under reduced motion, but pin the
+     ghost word's rest state here too so a preference change mid-scroll cannot
+     leave it offset or faded. `transform: none` would drop the centring
+     translateX, so restate the full rest transform. */
+  .hero-ghost {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    will-change: auto;
   }
 
   .reveal-ready .reveal-item,

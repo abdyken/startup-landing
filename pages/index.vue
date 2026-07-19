@@ -251,8 +251,33 @@ const faqs = [
 ]
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
-// Easing matched to the Homie reference (.reference/homie-template):
-// scale + height ease with easeOutQuad, the corner radius with easeOutCubic.
+
+// ── Hero scroll scene ──────────────────────────────────────────────────────
+// A port of the Homie reference hero, whose source is the spec here:
+// .reference/homie-template/components/hero-section.tsx
+//
+// Architecture, from that file: the hero is NOT pinned. The section is ordinary
+// normal-flow content a bit over one viewport tall and scrolls away at page
+// speed; the only scroll-driven elements are the absolutely-positioned,
+// top-anchored media layer and the giant background word. The headline and the
+// phone are never touched after their mount entrance.
+//
+// Every constant below is the reference's, verbatim.
+const HERO_SCROLL_RANGE = 400 // reference: `const maxScroll = 400`
+const HERO_SMOOTHING = 0.1 // reference: `(targetProgress - currentProgress) * 0.1`
+const HERO_SETTLE_EPSILON = 0.001 // reference: `Math.abs(...) > 0.001`
+// NOTE: the smoothing step is applied once per animation frame and is NOT
+// normalised by the frame delta — that is literally what the reference does, so
+// the filter converges faster on a 120Hz display and slower on a janky one.
+// This was deliberately made frame-rate independent at one point; it was
+// reverted because exact reference behaviour takes priority over the
+// improvement. Do not re-add deltaTime normalisation here.
+// Deliberate deviation from the reference, which has no breakpoint gate: below
+// this width main.css composes the video as a full-bleed backdrop rather than a
+// top-anchored shrinking slab, so the scene stays inert. See the `max-width:
+// 640px` block for `.hero-media` in assets/css/main.css.
+const HERO_MOBILE_QUERY = '(max-width: 640px)'
+// Media layer eases; the ghost word uses raw progress. Both per the reference.
 const easeOutQuad = (t) => t * (2 - t)
 const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3)
 let cleanupHeroScroll = () => {}
@@ -276,52 +301,95 @@ onMounted(() => {
 
 onMounted(() => {
   const hero = heroRef.value
-  const root = document.documentElement
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-  const mobileQuery = window.matchMedia('(max-width: 640px)')
+  const mobileQuery = window.matchMedia(HERO_MOBILE_QUERY)
+
+  // The scene's authoritative state. `target` follows the scroll position
+  // immediately; `current` chases it through the reference's filter. Nothing
+  // else in the app writes these five properties, so there is exactly one
+  // animation path per property — no CSS transition, no Vue state, no second
+  // scroll-timeline competing for them.
+  const HERO_VARS = [
+    '--hero-scale',
+    '--hero-radius',
+    '--hero-height',
+    '--hero-ghost-y',
+    '--hero-ghost-opacity',
+  ]
 
   let animationFrame = 0
+  let targetProgress = 0
+  let currentProgress = 0
   let isListening = false
 
-  const setStaticHero = () => {
-    root.style.setProperty('--hero-scale', '1')
-    root.style.setProperty('--hero-radius', '0px')
-    root.style.setProperty('--hero-height', '100svh')
-  }
-
-  const updateHeroVars = () => {
-    animationFrame = 0
-
+  // Vars live on the hero element, not <html>: .hero-media and .hero-ghost are
+  // both descendants, and a per-element write avoids invalidating the whole
+  // document's custom properties on every frame.
+  const applyProgress = (progress) => {
     if (!hero) {
       return
     }
 
-    // Mobile keeps a static hero: the shrink layout is desktop-only (the CSS at
-    // max-width:640px drops the sticky/transform), so don't drive the vars there.
-    if (mobileQuery.matches) {
-      setStaticHero()
-      return
-    }
-
-    // Match the reference: the shrink plays over the first 400px of page scroll,
-    // eased, then holds. scrollY ≈ -hero.top since the hero starts at page top.
-    const progress = clamp(window.scrollY / 400, 0, 1)
-
-    const scale = 1 - easeOutQuad(progress) * 0.15
-    const radius = easeOutCubic(progress) * 48
-    const height = 100 - easeOutQuad(progress) * 37.5
-
-    root.style.setProperty('--hero-scale', scale.toFixed(3))
-    root.style.setProperty('--hero-radius', `${radius.toFixed(1)}px`)
-    root.style.setProperty('--hero-height', `${height.toFixed(1)}svh`)
+    // Media layer — eased. scale 1→0.85, radius 0→48px, height 100→62.5.
+    hero.style.setProperty('--hero-scale', (1 - easeOutQuad(progress) * 0.15).toFixed(4))
+    hero.style.setProperty('--hero-radius', `${(easeOutCubic(progress) * 48).toFixed(2)}px`)
+    hero.style.setProperty('--hero-height', `${(100 - easeOutQuad(progress) * 37.5).toFixed(3)}svh`)
+    // Ghost word — RAW progress, exactly as the reference does for this layer.
+    hero.style.setProperty('--hero-ghost-y', `${(progress * 150).toFixed(2)}px`)
+    hero.style.setProperty('--hero-ghost-opacity', (1 - progress * 0.8).toFixed(4))
   }
 
-  const requestHeroUpdate = () => {
-    if (animationFrame || reducedMotionQuery.matches) {
+  // Fall back to the :root rest values in main.css rather than writing a second
+  // copy of them here, which could drift out of sync.
+  const clearHeroVars = () => {
+    if (!hero) {
       return
     }
 
-    animationFrame = window.requestAnimationFrame(updateHeroVars)
+    HERO_VARS.forEach((name) => hero.style.removeProperty(name))
+  }
+
+  const stopLoop = () => {
+    if (animationFrame) {
+      window.cancelAnimationFrame(animationFrame)
+      animationFrame = 0
+    }
+  }
+
+  const readTargetProgress = () => clamp(window.scrollY / HERO_SCROLL_RANGE, 0, 1)
+
+  // The reference's `smoothUpdate`, ported line for line. It self-sustains
+  // across frames until it converges, which is why the collapse keeps easing
+  // for roughly 0.7s after the wheel stops — the defining characteristic of
+  // this hero's feel.
+  const step = () => {
+    animationFrame = 0
+
+    currentProgress += (targetProgress - currentProgress) * HERO_SMOOTHING
+
+    if (Math.abs(targetProgress - currentProgress) > HERO_SETTLE_EPSILON) {
+      applyProgress(currentProgress)
+      animationFrame = window.requestAnimationFrame(step)
+      return
+    }
+
+    // Reference: once inside the epsilon it stops iterating and commits the
+    // exact target, so the scene lands on a clean 0 or 1.
+    currentProgress = targetProgress
+    applyProgress(currentProgress)
+  }
+
+  // Reference: `cancelAnimationFrame(rafId); smoothUpdate()` on every scroll
+  // event — the pending frame is dropped and the loop restarts against the new
+  // target, while `currentProgress` carries over.
+  const handleScroll = () => {
+    if (!hero || mobileQuery.matches) {
+      return
+    }
+
+    targetProgress = readTargetProgress()
+    stopLoop()
+    step()
   }
 
   const addScrollListeners = () => {
@@ -330,9 +398,11 @@ onMounted(() => {
     }
 
     isListening = true
-    window.addEventListener('scroll', requestHeroUpdate, { passive: true })
-    window.addEventListener('resize', requestHeroUpdate)
-    updateHeroVars()
+    // Scroll only. The reference registers no resize handler, and none is
+    // needed: progress is a pure function of scrollY, and the applied values
+    // are in svh/px rather than measured layout, so a resize cannot invalidate
+    // them. A resize that moves the scroll position fires a scroll event anyway.
+    window.addEventListener('scroll', handleScroll, { passive: true })
   }
 
   const removeScrollListeners = () => {
@@ -341,38 +411,33 @@ onMounted(() => {
     }
 
     isListening = false
-    window.removeEventListener('scroll', requestHeroUpdate)
-    window.removeEventListener('resize', requestHeroUpdate)
+    window.removeEventListener('scroll', handleScroll)
   }
 
-  const syncMotionPreference = () => {
-    if (reducedMotionQuery.matches) {
+  // Reduced motion wins over everything; below that, mobile keeps a static hero.
+  const syncHeroScene = () => {
+    if (reducedMotionQuery.matches || mobileQuery.matches) {
       removeScrollListeners()
-      if (animationFrame) {
-        window.cancelAnimationFrame(animationFrame)
-        animationFrame = 0
-      }
-      setStaticHero()
+      stopLoop()
+      currentProgress = 0
+      targetProgress = 0
+      clearHeroVars()
       return
     }
 
     addScrollListeners()
   }
 
-  syncMotionPreference()
-  reducedMotionQuery.addEventListener('change', syncMotionPreference)
-  mobileQuery.addEventListener('change', requestHeroUpdate)
+  syncHeroScene()
+  reducedMotionQuery.addEventListener('change', syncHeroScene)
+  mobileQuery.addEventListener('change', syncHeroScene)
 
   cleanupHeroScroll = () => {
     removeScrollListeners()
-    reducedMotionQuery.removeEventListener('change', syncMotionPreference)
-    mobileQuery.removeEventListener('change', requestHeroUpdate)
-
-    if (animationFrame) {
-      window.cancelAnimationFrame(animationFrame)
-    }
-
-    setStaticHero()
+    stopLoop()
+    reducedMotionQuery.removeEventListener('change', syncHeroScene)
+    mobileQuery.removeEventListener('change', syncHeroScene)
+    clearHeroVars()
   }
 })
 
@@ -507,7 +572,7 @@ onBeforeUnmount(() => {
 
     <main id="top">
       <section ref="heroRef" class="hero" aria-labelledby="hero-heading">
-        <div class="hero-sticky">
+        <div class="hero-scene">
           <div class="hero-shrink-stage">
             <div class="hero-media" aria-hidden="true">
               <video
