@@ -556,9 +556,8 @@ onBeforeUnmount(() => {
 <template>
   <div class="site-shell">
     <header class="site-nav">
-      <a href="#top" class="brand" aria-label="Lullaby home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>Lullaby</span>
+      <a href="#top" class="brand" aria-label="Lullaby — Home">
+        <img src="/images/lullaby-logo.svg" class="brand-logo" alt="" />
       </a>
 
       <nav class="nav-links" aria-label="Primary">
@@ -838,8 +837,6 @@ onBeforeUnmount(() => {
             <h3 class="footer-col-title">Support</h3>
             <a href="#faq">FAQ</a>
             <a href="#waitlist">Waitlist</a>
-            <NuxtLink to="/privacy">Privacy</NuxtLink>
-            <NuxtLink to="/terms">Terms</NuxtLink>
           </div>
 
           <div class="footer-col">
@@ -852,7 +849,6 @@ onBeforeUnmount(() => {
       <div class="footer-legal">
         <div class="footer-legal-brand">
           <a href="#top" class="brand footer-brand" aria-label="Lullaby home">
-            <span class="brand-mark" aria-hidden="true"></span>
             <span>Lullaby</span>
           </a>
           <span class="footer-copy">© 2026 Lullaby</span>

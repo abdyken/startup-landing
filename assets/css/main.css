@@ -194,6 +194,13 @@ p {
   font-weight: 700;
 }
 
+.brand-logo {
+  display: block;
+  width: auto;
+  height: 30px;
+  object-fit: contain;
+}
+
 .brand-mark {
   width: 18px;
   height: 18px;
