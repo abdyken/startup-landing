@@ -447,6 +447,14 @@ onMounted(() => {
   const revealItems = Array.from(document.querySelectorAll('.reveal-item'))
   let observer = null
 
+  // `is-revealed` is written imperatively here, so nothing in the template may
+  // bind `:class` on a `.reveal-item` — Vue patches the WHOLE class attribute
+  // when a bound class changes and would silently drop this one. That is
+  // exactly what used to happen to `.story-moment`: every time
+  // `activeProductMomentIndex` moved, Vue rewrote the card's classes and three
+  // of the four Night Log cards fell back to `opacity: 0` permanently. Reactive
+  // per-card state belongs on a data attribute (see `:data-active` below).
+
   const revealAll = () => {
     revealItems.forEach((item) => item.classList.add('is-revealed'))
   }
@@ -685,7 +693,7 @@ onBeforeUnmount(() => {
               v-for="(moment, index) in productMoments"
               :key="moment.key"
               class="story-moment reveal-item"
-              :class="{ 'is-active': activeProductMomentIndex === index }"
+              :data-active="activeProductMomentIndex === index ? 'true' : undefined"
               :data-moment-index="index"
               :style="{ '--reveal-delay': `${index * 70}ms` }"
               :aria-current="activeProductMomentIndex === index ? 'step' : undefined"

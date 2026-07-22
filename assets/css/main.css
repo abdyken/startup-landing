@@ -1432,7 +1432,14 @@ summary:focus-visible {
   display: grid;
   grid-template-columns: minmax(320px, 0.86fr) minmax(0, 1fr);
   align-items: start;
-  gap: clamp(42px, 8vw, 112px);
+  /* Split axes: the column gutter separates the phone from the copy and stays
+     generous (unchanged value, so no column re-flow), while the row gap only
+     has to separate the heading from the card stack — 112px there was a side
+     effect of sharing one `gap`, not a decision. Below 980px the grid is a
+     single column, so the row gap alone applies and the smaller value shortens
+     the stacked layout rather than lengthening it. */
+  column-gap: clamp(42px, 8vw, 112px);
+  row-gap: clamp(32px, 3.4vw, 48px);
 }
 
 .story-visual {
@@ -1635,7 +1642,18 @@ summary:focus-visible {
   display: grid;
   gap: 18px;
   margin-top: 24px;
-  padding-bottom: 22svh;
+  /* Trailing scroll room, and NOT decoration: `.story-visual` is a 749px sticky
+     box (its height comes from `.lb-phone` in the mockup), so the phone stays
+     pinned for exactly (grid height − 749)px. Shortening the cards shortened
+     that pin, so the tail is the only in-scope term that buys back pinned
+     scroll *after* the last card activates — which is what keeps the final
+     "Morning recap" state on screen while that card is being read.
+     Flat px, not svh: the 749px it compensates for is a px quantity, and an
+     svh tail shrinks on exactly the short viewports that need it most.
+     Measured at 260px: phone-head visibility during card 3 is 100/95/82% at
+     1440/1280/1024, matching the pre-compression 100/91/85%. At 96px it drops
+     to 83/67/45%. Zeroed below 980px, where the phone is not sticky. */
+  padding-bottom: 260px;
 }
 
 .story-moment {
@@ -1643,9 +1661,14 @@ summary:focus-visible {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 20px;
-  min-height: 50svh;
+  /* Content-sized, with a floor rather than a viewport-derived height. The old
+     `50svh` (450px at 900) held ~327px of content, so every card carried
+     100–190px of slack and the four of them alone spent 1800px of scroll. The
+     clamp only engages on tall viewports, where it keeps the cards on a
+     consistent rhythm instead of letting the shortest one collapse. */
+  min-height: clamp(260px, 30svh, 340px);
   align-content: center;
-  padding: clamp(24px, 4vw, 38px);
+  padding: clamp(28px, 3vw, 32px);
   border: 1px solid rgba(62, 92, 118, 0.18);
   border-radius: var(--radius-lg);
   background:
@@ -1679,7 +1702,12 @@ summary:focus-visible {
     opacity 520ms ease;
 }
 
-.story-moment.is-active {
+/* Active (on-screen) state is driven by `data-active`, NOT a class: these cards
+   also carry the imperatively-added `is-revealed` class, and a Vue `:class`
+   binding here would rewrite the whole class attribute and erase it. Attribute
+   selectors keep the original (0,2,0) specificity, so the cascade against
+   `.reveal-ready .reveal-item` is unchanged. */
+.story-moment[data-active='true'] {
   border-color: var(--story-accent-border);
   background:
     linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 240, 233, 0.94)),
@@ -1690,7 +1718,7 @@ summary:focus-visible {
     0 20px 48px rgba(62, 92, 118, 0.11);
 }
 
-.story-moment.is-active::before {
+.story-moment[data-active='true']::before {
   height: 58%;
   opacity: 1;
 }
@@ -1704,7 +1732,7 @@ summary:focus-visible {
   transition: color 520ms ease;
 }
 
-.story-moment.is-active .story-count {
+.story-moment[data-active='true'] .story-count {
   color: var(--story-accent-ink);
 }
 
