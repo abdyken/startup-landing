@@ -736,7 +736,7 @@ onBeforeUnmount(() => {
         <div class="container final-inner reveal-item">
           <div class="section-heading narrow">
             <p class="eyebrow">Early access</p>
-            <h2>Get the first newbornnight build.</h2>
+            <h2>Get the first newborn night build.</h2>
             <p>
               For parents logging feeds, diapers, sleep, and partner handoffs at
               3AM. One email when the private beta opens.
