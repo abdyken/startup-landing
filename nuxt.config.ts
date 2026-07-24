@@ -14,13 +14,8 @@ export default defineNuxtConfig({
   watchers: {
     chokidar: { usePolling: true, interval: 300 },
   },
-  // Public Supabase credentials. Nuxt maps NUXT_PUBLIC_SUPABASE_URL ->
-  // public.supabaseUrl and NUXT_PUBLIC_SUPABASE_ANON_KEY -> public.supabaseAnonKey
-  // at runtime. The anon key is public by design; RLS guards the table.
   runtimeConfig: {
     public: {
-      supabaseUrl: '',
-      supabaseAnonKey: '',
       supportEmail: '240103091@sdu.edu.kz',
     },
   },

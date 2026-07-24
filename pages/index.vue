@@ -1,80 +1,12 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { getSupabaseClient } from '~/utils/supabaseClient'
 
 const heroRef = ref(null)
 const activeProductMomentIndex = ref(0)
 
-// --- Waitlist (Early Access form) -----------------------------------------
-const config = useRuntimeConfig()
-
-const waitlistEmail = ref('')
-const waitlistLoading = ref(false)
-const waitlistStatus = ref('') // '' | 'success' | 'error'
-const waitlistMessage = ref('')
-
-// Same basic shape as the RLS check on the table; we still trim + lowercase
-// before sending, and Postgres enforces the real constraint server-side.
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-const MESSAGES = {
-  invalid: 'Enter a valid email.',
-  duplicate: 'You’re already on the list.',
-  success: 'You’re on the list. We’ll email you when Lullaby opens.',
-  error: 'Something went wrong. Try again in a moment.',
-}
-
-const setStatus = (status, message) => {
-  waitlistStatus.value = status
-  waitlistMessage.value = message
-}
-
-const handleWaitlistSubmit = async () => {
-  // Prevent double submit while a request is in flight.
-  if (waitlistLoading.value) {
-    return
-  }
-
-  const email = waitlistEmail.value.trim().toLowerCase()
-
-  if (!EMAIL_PATTERN.test(email)) {
-    setStatus('error', MESSAGES.invalid)
-    return
-  }
-
-  waitlistLoading.value = true
-  setStatus('', '')
-
-  try {
-    const supabase = getSupabaseClient(
-      config.public.supabaseUrl,
-      config.public.supabaseAnonKey,
-    )
-
-    const { error } = await supabase
-      .from('waitlist')
-      .insert({ email, source: 'landing' })
-
-    if (error) {
-      // 23505 = unique_violation on the email column → already signed up.
-      if (error.code === '23505') {
-        setStatus('success', MESSAGES.duplicate)
-        waitlistEmail.value = ''
-        return
-      }
-
-      setStatus('error', MESSAGES.error)
-      return
-    }
-
-    setStatus('success', MESSAGES.success)
-    waitlistEmail.value = ''
-  } catch {
-    setStatus('error', MESSAGES.error)
-  } finally {
-    waitlistLoading.value = false
-  }
-}
+// Lullaby is live on the App Store; every CTA points here.
+const APP_STORE_URL =
+  'https://apps.apple.com/app/lullaby-newborn-companion/id6788094068'
 
 // Served from public/ at runtime; bound dynamically so it isn't statically
 // bundled by Vite (keeps the build green if the asset isn't committed yet).
@@ -219,7 +151,7 @@ const notAnother = [
   'Last feed saved',
   'Partner handoff ready',
   'No diagnosis',
-  'One email only',
+  'One-handed at 3AM',
 ]
 
 const faqs = [
@@ -244,9 +176,9 @@ const faqs = [
       'Common early worries like spitup, hiccups, cluster feeding, gassiness, poop color, feeding often, and "is this normal?" moments with clear boundaries and red flags.',
   },
   {
-    question: 'When is it launching?',
+    question: 'Where can I get Lullaby?',
     answer:
-      'Private beta first. Join the waitlist and you will get one email when the first newbornnight build opens.',
+      'Lullaby is available now on the App Store. Download it and the night log is ready before the next wakeup.',
   },
 ]
 
@@ -574,7 +506,13 @@ onBeforeUnmount(() => {
         </a>
       </nav>
 
-      <a class="nav-cta" href="#waitlist">Join the waitlist</a>
+      <a
+        class="nav-cta"
+        :href="APP_STORE_URL"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Download Lullaby on the App Store"
+      >Download the app</a>
     </header>
 
     <main id="top">
@@ -605,7 +543,25 @@ onBeforeUnmount(() => {
                   Log feeds, diapers, and sleep in seconds at 3AM. Lullaby turns
                   the night into a calm morning recap for you and your partner.
                 </p>
-                <a class="primary-button" href="#waitlist">Join the waitlist</a>
+                <a
+                  class="store-pill"
+                  :href="APP_STORE_URL"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Get Lullaby on the App Store"
+                >
+                  <svg
+                    class="store-pill-icon"
+                    viewBox="0 0 16 16"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.52.087 2.475-1.258.955-1.345.762-2.391.728-2.43Zm3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422.212-2.189 1.675-2.789 1.698-2.854.023-.065-.597-.79-1.254-1.157a3.692 3.692 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56.244.729.625 1.924 1.273 2.796.576.984 1.34 1.667 1.659 1.899.319.232 1.219.386 1.843.067.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758.347-.79.505-1.217.473-1.282Z" />
+                  </svg>
+                  Get Lullaby
+                </a>
               </div>
 
               <div class="hero-device" aria-label="Lullaby phone preview">
@@ -732,54 +688,25 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <section id="waitlist" class="final-cta section">
+      <section id="download" class="final-cta section">
         <div class="container final-inner reveal-item">
           <div class="section-heading narrow">
-            <p class="eyebrow">Early access</p>
-            <h2>Get the first newborn night build.</h2>
+            <p class="eyebrow">Available now</p>
+            <h2>Start tonight with Lullaby.</h2>
             <p>
               For parents logging feeds, diapers, sleep, and partner handoffs at
-              3AM. One email when the private beta opens.
+              3AM. Download it tonight and wake up clear.
             </p>
           </div>
 
           <div class="final-action">
-            <form
-              class="waitlist-form"
-              @submit.prevent="handleWaitlistSubmit"
-              aria-label="Join the Lullaby waitlist"
-            >
-              <label class="sr-only" for="waitlist-email">Email address</label>
-              <input
-                id="waitlist-email"
-                v-model="waitlistEmail"
-                class="waitlist-input"
-                type="email"
-                name="email"
-                placeholder="your@email.com"
-                autocomplete="email"
-                inputmode="email"
-                :disabled="waitlistLoading"
-                required
-              />
-              <button
-                class="primary-button waitlist-submit"
-                type="submit"
-                :disabled="waitlistLoading"
-              >
-                {{ waitlistLoading ? 'Joining…' : 'Join the waitlist' }}
-              </button>
-            </form>
-
-            <p
-              v-if="waitlistMessage"
-              class="waitlist-status"
-              :class="`is-${waitlistStatus}`"
-              role="status"
-              aria-live="polite"
-            >
-              {{ waitlistMessage }}
-            </p>
+            <a
+              class="primary-button"
+              :href="APP_STORE_URL"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Download Lullaby on the App Store"
+            >Get Lullaby</a>
 
             <ul class="not-list" aria-label="What Lullaby keeps out">
               <li v-for="item in notAnother" :key="item">{{ item }}</li>
@@ -844,7 +771,12 @@ onBeforeUnmount(() => {
           <div class="footer-col">
             <h3 class="footer-col-title">Support</h3>
             <a href="#faq">FAQ</a>
-            <a href="#waitlist">Waitlist</a>
+            <a
+              :href="APP_STORE_URL"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Download Lullaby on the App Store"
+            >Download</a>
           </div>
 
           <div class="footer-col">

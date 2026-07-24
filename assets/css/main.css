@@ -156,7 +156,7 @@ p {
 /* Major content sections (3AM Flow, Night Log, FAQ) use a calmer rhythm than
    the generic 168px: ~134px at ≥1280, ~111px at 1024, ~87px at 768, bottoming
    out at the 76px the ≤640px override already applies (that override sets
-   padding-block directly, so it still wins on mobile). The hero, waitlist,
+   padding-block directly, so it still wins on mobile). The hero, download band,
    footer and legal pages keep their own composition and are untouched. */
 .flow.section,
 .product-story.section,
@@ -164,12 +164,13 @@ p {
   --section-pad-y: clamp(76px, 9.3vw + 16px, 134px);
 }
 
-/* The waitlist is a single card, not a top-down reading section, so the anchor
-   should frame the CARD rather than the section's top edge. The section's large
-   top padding would otherwise drop the card ~250px down and clip its bottom.
-   Subtract that same padding so the card lands ~92px from the top — a calm gap
-   under the ~74px fixed navbar — and self-adjusts with the responsive padding. */
-#waitlist {
+/* The download band is a single card, not a top-down reading section, so the
+   anchor should frame the CARD rather than the section's top edge. The section's
+   large top padding would otherwise drop the card ~250px down and clip its
+   bottom. Subtract that same padding so the card lands ~92px from the top — a
+   calm gap under the ~74px fixed navbar — and self-adjusts with the responsive
+   padding. */
+#download {
   scroll-margin-top: calc(92px - clamp(96px, 13vw, 168px));
 }
 
@@ -327,6 +328,72 @@ p {
 .primary-button:focus-visible {
   outline: 2px solid var(--blue-soft);
   outline-offset: 3px;
+}
+
+/* Hero App Store CTA — dark navy glass pill. Reads as a download action
+   against the bright moon and echoes the headline blue and the iPhone's dark
+   frame, while staying secondary to both. */
+.store-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 164px;
+  min-height: 46px;
+  /* hero-copy's 14px grid gap + 4px lands the pill 18px under the subcopy;
+     the bottom margin pushes the phone to ~36px clear of the pill */
+  margin-top: 4px;
+  margin-bottom: 8px;
+  padding-inline: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(28, 52, 69, 0.76);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 10px 28px rgba(8, 22, 34, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.96);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.store-pill:hover,
+.store-pill:focus-visible {
+  transform: translateY(-2px);
+  background: rgba(28, 52, 69, 0.9);
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 14px 34px rgba(8, 22, 34, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.store-pill:active {
+  transform: translateY(0);
+}
+
+/* Keyboard focus uses the coral accent (the generic a:focus-visible blue would
+   vanish against the navy glass). */
+.store-pill:focus-visible {
+  outline: 3px solid var(--peach-deep);
+  outline-offset: 3px;
+}
+
+.store-pill-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  /* the apple glyph's stem makes the box read slightly low; nudge to center */
+  margin-top: -1px;
 }
 
 a:focus-visible,
@@ -543,7 +610,8 @@ summary:focus-visible {
   width: min(360px, 82vw);
   /* Decorative phone preview. Its ::before glow is 760px wide and overlaps the
      hero CTA, and .hero-device stacks above .hero-copy — so without this the
-     glow swallows clicks on "Join the waitlist". Nothing here is interactive. */
+     glow swallows clicks on "Download on the App Store". Nothing here is
+     interactive. */
   pointer-events: none;
 }
 
@@ -1941,60 +2009,6 @@ summary:focus-visible {
   background: var(--peach);
 }
 
-.waitlist-form {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  width: 100%;
-  max-width: 34rem;
-  margin-inline: auto;
-}
-
-.waitlist-input {
-  width: 100%;
-  min-height: 56px;
-  padding: 0 20px;
-  border: 1px solid rgba(62, 92, 118, 0.28);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
-  font: inherit;
-  font-size: 1rem;
-  box-shadow: inset 0 1px 2px rgba(62, 92, 118, 0.07);
-  transition:
-    border-color 200ms ease,
-    box-shadow 200ms ease;
-}
-
-.waitlist-input::placeholder {
-  color: var(--muted);
-}
-
-.waitlist-input:hover {
-  border-color: rgba(62, 92, 118, 0.42);
-}
-
-.waitlist-input:focus-visible {
-  outline: 2px solid var(--blue-soft);
-  outline-offset: 3px;
-  border-color: var(--steel);
-}
-
-.waitlist-submit {
-  min-width: 0;
-}
-
-.waitlist-status {
-  margin: 0;
-  font-size: 0.94rem;
-  font-weight: 600;
-  color: var(--steel);
-}
-
-.waitlist-status.is-error {
-  color: #c2603d;
-}
-
 .cta-note {
   color: var(--steel);
   font-size: 0.92rem;
@@ -2576,7 +2590,7 @@ summary:focus-visible {
   /* Mobile: section padding is 76px and the navbar bottom sits ~68px down, so
      land the card ~84px from the top (subtract the 76px padding → 8px). Keeps
      the card framed just under the navbar instead of dropped 200px low. */
-  #waitlist {
+  #download {
     scroll-margin-top: calc(84px - 76px);
   }
 
@@ -2645,7 +2659,7 @@ summary:focus-visible {
 
   /* Mobile section headings: the base 2.375rem floor left the longest heading
      ("A small night record…") on 4 lines at 390px; ~34px brings it to 3 lines
-     while staying clearly above body copy. Waitlist, legal and phone-UI
+     while staying clearly above body copy. Download band, legal and phone-UI
      headings all carry their own more specific font-size rules. */
   h2 {
     font-size: clamp(2.125rem, 8.75vw, 2.375rem);
@@ -2747,17 +2761,19 @@ summary:focus-visible {
     max-width: none;
   }
 
-  /* small mobile: stack the form so the field stays comfortably tappable, and
-     let the reassurance notes wrap as a tight centred cluster */
-  .waitlist-form {
-    grid-template-columns: 1fr;
-    max-width: 22rem;
+  /* Store pill keeps a 44px touch target; padding and icon tighten a touch. */
+  .store-pill {
+    min-width: 156px;
+    min-height: 44px;
+    padding-inline: 20px;
   }
 
-  .waitlist-submit {
-    width: 100%;
+  .store-pill-icon {
+    width: 15px;
+    height: 15px;
   }
 
+  /* small mobile: let the reassurance notes wrap as a tight centred cluster */
   .not-list {
     gap: 8px 14px;
   }
@@ -2932,7 +2948,8 @@ summary:focus-visible {
   }
 
   .nav-cta,
-  .primary-button {
+  .primary-button,
+  .store-pill {
     transition: none;
   }
 
@@ -2942,6 +2959,9 @@ summary:focus-visible {
   .primary-button:hover,
   .primary-button:focus-visible,
   .primary-button:active,
+  .store-pill:hover,
+  .store-pill:focus-visible,
+  .store-pill:active,
   .flow-step:hover {
     transform: none;
   }

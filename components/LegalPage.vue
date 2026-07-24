@@ -55,7 +55,7 @@ const props = defineProps({
       <nav aria-label="Footer legal links">
         <NuxtLink to="/privacy">Privacy</NuxtLink>
         <NuxtLink to="/terms">Terms</NuxtLink>
-        <NuxtLink to="/#waitlist">Waitlist</NuxtLink>
+        <NuxtLink to="/#download">Download</NuxtLink>
       </nav>
       <p>Lullaby is not medical diagnosis. Contact a pediatrician or emergency services for health concerns.</p>
     </footer>
